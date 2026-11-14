@@ -1,0 +1,238 @@
+
+[
+  {
+    "card_id": "heart-rate",
+    "title": "Heart Rate",
+    "category": "vital_sign",
+    "tags": ["heart_rate", "pulse", "chest", "tachycardia", "bradycardia"],
+    "body_regions": ["chest"],
+    "what_it_is": "Heart rate is the number of times the heart beats per minute, a basic measure of cardiovascular activity【21†L277-L284】. It indicates how hard the heart is working to pump blood.",
+    "spaceflight_effect": "In microgravity, fluid shifts and cardiac adaptations alter heart rate. Studies report short-term missions see a ~10–20% increase in resting heart rate【25†L299-L307】, and long missions show about a 20% rise【25†L284-L292】. On return to Earth, reduced blood volume and orthostatic stress cause heart rate to be higher than normal (e.g. ~+21 bpm when standing postflight【26†L410-L418】).",
+    "red_flags": [
+      "Resting heart rate consistently above 100 or below 60 with symptoms",
+      "Fainting or severe dizziness with changes in heart rate",
+      "Chest pain, shortness of breath, or loss of consciousness【21†L325-L330】"
+    ],
+    "escalate_when": "Source does not specify; contact flight surgeon if concerned.",
+    "general_actions": [
+      "Regular aerobic exercise (e.g. treadmill, cycling) aboard ISS to maintain cardiovascular fitness【32†L354-L359】"
+    ],
+    "measurement_notes": "Measured in space via wearable sensors (e.g. Bio-Monitor smart shirt with ECG/pulse sensors【30†L49-L56】). The normal adult resting range is about 60–100 beats per minute【21†L277-L284】.",
+    "content_type": "REFERENCE",
+    "source_title": "Microgravity and Cardiovascular Health in Astronauts: A Narrative Review",
+    "source_org": "Health Science Reports (Wiley)",
+    "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11705478/",
+    "source_date": "2025-01-07",
+    "source_section": "",
+    "licence": "CC BY 4.0",
+    "confidence": "high",
+    "confidence_reason": "Based on a recent peer-reviewed review summarizing multiple astronaut studies.",
+    "context_notes": "NASA-specific heart rate alert thresholds not found; values above use general medical guidance【21†L325-L330】."
+  },
+  {
+    "card_id": "blood-pressure",
+    "title": "Blood Pressure",
+    "category": "vital_sign",
+    "tags": ["blood_pressure", "hypertension", "hypotension", "chest", "dizziness"],
+    "body_regions": ["chest"],
+    "what_it_is": "Blood pressure is the force of blood against the walls of arteries as the heart pumps【34†L31-L34】. It is given as two numbers: systolic (pressure during heartbeat) over diastolic (pressure between beats).",
+    "spaceflight_effect": "Microgravity alters circulation but resting pressure is often maintained. One bed-rest study reported a ~16.7% rise in systolic pressure【25†L367-L370】, while others (e.g. ISS data) show mean arterial pressure is unchanged in space【26†L441-L444】. Returning astronauts may experience orthostatic hypotension (low standing pressure).",
+    "red_flags": [
+      "Very high blood pressure (e.g. >180/120 mmHg) or very low (<90/60 mmHg)",
+      "Symptoms of hypotension (fainting, severe dizziness) or hypertension (severe headache, vision changes)【34†L86-L91】"
+    ],
+    "escalate_when": "Source does not specify; contact flight surgeon if concerned.",
+    "general_actions": [
+      "Regular aerobic exercise in flight to maintain vascular tone【32†L354-L359】",
+      "Gradual position changes to prevent fainting"
+    ],
+    "measurement_notes": "Measured using an arm cuff (as on Earth) or by wearable sensors (e.g. Bio-Monitor measures blood pressure)【30†L49-L56】. Normal adult blood pressure is below about 120/80 mmHg【34†L31-L34】.",
+    "content_type": "REFERENCE",
+    "source_title": "Blood Pressure: Types, Ranges & Readings",
+    "source_org": "Cleveland Clinic",
+    "source_url": "https://my.clevelandclinic.org/health/diagnostics/17649-blood-pressure",
+    "source_date": "2025-06-02",
+    "source_section": "",
+    "licence": "copyrighted, link only",
+    "confidence": "medium",
+    "confidence_reason": "Based on a medical reference (Cleveland Clinic) and spaceflight study references.",
+    "context_notes": "Astronaut BP responses vary in studies: e.g. +16.7% increase reported【25†L367-L370】 vs. no change【26†L441-L444】. Clinicians should interpret in-flight readings with caution."
+  },
+  {
+    "card_id": "oxygen-saturation",
+    "title": "Blood Oxygen Saturation (SpO₂)",
+    "category": "vital_sign",
+    "tags": ["SpO2", "oxygen", "hypoxemia", "chest", "shortness_of_breath"],
+    "body_regions": ["chest"],
+    "what_it_is": "Oxygen saturation (SpO₂) is the percentage of hemoglobin in the blood carrying oxygen【38†L25-L30】. It is measured with a pulse oximeter (often at a fingertip) and normally ranges from about 95% to 100% in a healthy person at normal atmospheric pressure【38†L29-L31】.",
+    "spaceflight_effect": "In a properly oxygenated spacecraft environment, SpO₂ remains near normal【38†L29-L31】. The literature does not report unique microgravity effects on oxygen saturation (not established in sources). Astronauts use controlled cabin oxygen, so SpO₂ typically stays normal unless technical or medical issues arise.",
+    "red_flags": [
+      "SpO₂ consistently below 90%",
+      "Sudden drop in SpO₂ or inability to maintain ≥95%",
+      "Symptoms of hypoxia (shortness of breath, confusion, rapid heartbeat)"
+    ],
+    "escalate_when": "Source does not specify; contact flight surgeon if SpO₂ falls below ~90% or if concerned.",
+    "general_actions": [
+      "Ensure controlled breathing (slow, deep breaths) to maximize oxygen uptake",
+      "If available, use supplemental oxygen or rest until SpO₂ recovers"
+    ],
+    "measurement_notes": "Measured with a pulse oximeter (finger, ear, or wearable sensor)【30†L49-L56】. Normal range is ~95–100%【38†L29-L31】 at sea-level conditions.",
+    "content_type": "REFERENCE",
+    "source_title": "Oxygen Saturation: Monitoring and Interpretation",
+    "source_org": "StatPearls (NIH/NLM)",
+    "source_url": "https://ncbi.nlm.nih.gov/books/NBK525974/",
+    "source_date": "2026-06-03",
+    "source_section": "",
+    "licence": "public domain",
+    "confidence": "high",
+    "confidence_reason": "Based on a recent medical reference (StatPearls) detailing oxygen saturation norms.",
+    "context_notes": ""
+  },
+  {
+    "card_id": "body-temperature",
+    "title": "Body Temperature",
+    "category": "vital_sign",
+    "tags": ["body_temperature", "fever", "hypothermia", "head"],
+    "body_regions": ["chest", "head"],
+    "what_it_is": "Body temperature is the measure of how hot the body's core is. A healthy individual’s core temperature is about 37°C (98.6°F)【48†L28-L31】, typically within ±0.5°C.",
+    "spaceflight_effect": "Effects of microgravity on normal body temperature are not clearly documented in sources ('not established in sources'). There is no reported standard change in baseline temperature due to spaceflight.",
+    "red_flags": [
+      "Core temperature above ~38.0°C (fever) or below ~35.0°C",
+      "Very high fever (39°C or higher) with severe symptoms like confusion or seizures【54†L78-L84】",
+      "Hypothermia signs (shivering, confusion) if temperature drops below 35°C"
+    ],
+    "escalate_when": "Source does not specify; contact flight surgeon for fever >38.5°C or hypothermia <35°C.",
+    "general_actions": [
+      "Rest, hydration, and light clothing help regulate temperature",
+      "For fever, reduce insulation (loosen clothing), apply cool cloths; for hypothermia, re-warm gradually"
+    ],
+    "measurement_notes": "Temperature is measured with a thermometer (oral, tympanic, or ingestible), as on Earth. The Bio-Monitor shirt also tracks skin temperature【30†L49-L56】.",
+    "content_type": "REFERENCE",
+    "source_title": "Physiology, Fever",
+    "source_org": "StatPearls (NIH/NLM)",
+    "source_url": "https://www.ncbi.nlm.nih.gov/books/NBK562334/",
+    "source_date": "2023-09-04",
+    "source_section": "",
+    "licence": "public domain",
+    "confidence": "medium",
+    "confidence_reason": "Based on clinical physiology sources (StatPearls); space-specific data are limited.",
+    "context_notes": ""
+  },
+  {
+    "card_id": "breathing-rate",
+    "title": "Breathing Rate (Respiratory Rate)",
+    "category": "vital_sign",
+    "tags": ["respiratory_rate", "breathing_rate", "tachypnea", "dyspnea"],
+    "body_regions": ["chest"],
+    "what_it_is": "Breathing rate is the number of breaths per minute, measuring how often a person inhales and exhales【58†L99-L102】. It reflects respiratory function and overall metabolic activity.",
+    "spaceflight_effect": "The effect of microgravity on resting breathing rate is not clearly documented ('not established in sources'). Closed-environment factors (like higher CO₂) could slightly raise respiratory drive, but standard spaceflight keeps respiration within normal limits.",
+    "red_flags": [
+      "Breathing rate consistently above ~20/min (tachypnea) or below ~12/min (bradypnea) at rest",
+      "Signs of respiratory distress (severe shortness of breath, cyanosis, confusion)"
+    ],
+    "escalate_when": "Source does not specify; contact flight surgeon if concerned about abnormal breathing rate or respiratory distress.",
+    "general_actions": [
+      "Practice slow, deep breathing to maintain lung capacity",
+      "Perform regular aerobic exercise in flight to keep respiratory muscles strong"
+    ],
+    "measurement_notes": "Measured by counting chest rises or via respiratory sensors. On ISS, wearable monitors (Bio-Monitor) track breathing rate and volume【30†L49-L56】. Normal adult rate ~12–18 breaths/min【58†L99-L102】.",
+    "content_type": "REFERENCE",
+    "source_title": "Vital Signs",
+    "source_org": "Cleveland Clinic",
+    "source_url": "https://my.clevelandclinic.org/health/articles/10881-vital-signs",
+    "source_date": "2023-03-15",
+    "source_section": "",
+    "licence": "copyrighted, link only",
+    "confidence": "medium",
+    "confidence_reason": "Based on Cleveland Clinic guidelines and general physiology; space-specific data are scarce.",
+    "context_notes": ""
+  },
+  {
+    "card_id": "blood-glucose",
+    "title": "Blood Glucose",
+    "category": "vital_sign",
+    "tags": ["blood_glucose", "sugar", "diabetes", "hypoglycemia", "abdomen"],
+    "body_regions": ["abdomen"],
+    "what_it_is": "Blood glucose is the amount of sugar (glucose) in the blood, used by cells for energy. Normal fasting levels for healthy adults are roughly 70–100 mg/dL【63†L212-L214】.",
+    "spaceflight_effect": "No direct microgravity effect on glucose is documented in sources. However, appetite changes and dietary differences in space can affect blood sugar regulation.",
+    "red_flags": [
+      "Blood glucose below ~70 mg/dL (hypoglycemia) causing sweating, shakiness, confusion",
+      "Blood glucose significantly above ~200 mg/dL with symptoms like confusion or dehydration"
+    ],
+    "escalate_when": "Source does not specify; contact flight surgeon if blood glucose is <70 mg/dL or rapidly rising above normal with symptoms.",
+    "general_actions": [
+      "Eat regular small meals with balanced carbohydrates/protein to maintain stable glucose",
+      "Monitor diet to avoid excess sugar; consider low-glycemic foods to prevent spikes"
+    ],
+    "measurement_notes": "Measured with a blood glucose meter (fingerstick) or lab test. Normal fasting level is <100 mg/dL【63†L212-L214】.",
+    "content_type": "REFERENCE",
+    "source_title": "Normal Range for Fasting Glucose Levels",
+    "source_org": "Healthline",
+    "source_url": "https://www.healthline.com/health/diabetes/fasting-glucose-normal-range",
+    "source_date": "2026-11-03",
+    "source_section": "",
+    "licence": "copyrighted, link only",
+    "confidence": "medium",
+    "confidence_reason": "Based on standard clinical diabetes guidelines (ADA) via a medical website.",
+    "context_notes": ""
+  },
+  {
+    "card_id": "sleep-disturbance",
+    "title": "Sleep Quality and Duration",
+    "category": "vital_sign",
+    "tags": ["sleep", "insomnia", "fatigue", "circadian"],
+    "body_regions": ["head"],
+    "what_it_is": "Sleep is a period of rest with reduced awareness and activity. Healthy adults typically need about 7–9 hours per night【69†L106-L110】.",
+    "spaceflight_effect": "Astronauts often sleep less in space: studies report an average of ~6 hours per night on ISS【65†L21-L24】, less than on Earth, due to altered light/dark cues (16 sunrises per day) and demanding schedules. Poor sleep can reduce alertness and performance【65†L21-L24】.",
+    "red_flags": [
+      "Persistent insomnia (difficulty sleeping) or excessive fatigue",
+      "Falling asleep unintentionally, repeated night awakenings",
+      "Significant performance/attention decline due to lack of sleep【65†L21-L24】"
+    ],
+    "escalate_when": "Source does not specify; contact flight surgeon if sleep loss is chronic or impacts safety/alertness.",
+    "general_actions": [
+      "Maintain a regular sleep schedule and dark sleep environment",
+      "Use sleep hygiene practices (e.g. avoid caffeine late) and consider melatonin for circadian adjustment【72†L1-L4】"
+    ],
+    "measurement_notes": "Sleep in space is tracked with actigraphy (wrist monitors) and sleep logs. There is no strict in-flight 'normal range', but less than ~6–7 hours/night is common during ISS missions【65†L21-L24】.",
+    "content_type": "REFERENCE",
+    "source_title": "Astronaut Sleep Duration Varies by Timing of Scheduled Sleep",
+    "source_org": "NASA Ames Research Center",
+    "source_url": "https://ntrs.nasa.gov/api/citations/20230003916/downloads/AsMA-2023-Poster_FlynnEvanssleep.pdf",
+    "source_date": "2023-03",
+    "source_section": "",
+    "licence": "public domain (US Gov)",
+    "confidence": "high",
+    "confidence_reason": "Based on NASA studies of astronaut sleep patterns and NIH sleep guidelines.",
+    "context_notes": ""
+  },
+  {
+    "card_id": "behavioral-health",
+    "title": "Mood and Behavioral Health",
+    "category": "vital_sign",
+    "tags": ["mood", "anxiety", "depression", "behavioral", "mental_health"],
+    "body_regions": [],
+    "what_it_is": "Mood/behavioral health refers to a person’s emotional and psychological state. It includes feelings (e.g. happiness, anxiety) and behavior patterns. Astronauts self-report mood and undergo regular psychological assessments.",
+    "spaceflight_effect": "Prolonged isolation, confinement, and separation from Earth can increase risk of anxiety and depression【74†L326-L329】. These stressors may also affect sleep and morale. Communication delays on deep-space missions will create new challenges.",
+    "red_flags": [
+      "Persistent anxiety, panic attacks or depression symptoms",
+      "Significant mood swings, social withdrawal, or suicidal thoughts"
+    ],
+    "escalate_when": "Source does not specify; contact flight surgeon or medical officer if severe anxiety or depressive symptoms occur.",
+    "general_actions": [
+      "Use countermeasures such as keeping a regular journal and hobbies【74†L338-L346】",
+      "Maintain social connections (video calls) and consider therapeutic activities like growing plants【74†L338-L346】"
+    ],
+    "measurement_notes": "Evaluated via psychological questionnaires and interviews (no fixed numeric range). Regular mental health check-ins are standard for astronauts.",
+    "content_type": "REFERENCE",
+    "source_title": "Risk of Behavioral Changes and Psychiatric Disorders",
+    "source_org": "NASA Human Research Program",
+    "source_url": "https://www.nasa.gov/reference/risk-of-behavioral-changes-and-psychiatric-disorders/",
+    "source_date": "unknown",
+    "source_section": "",
+    "licence": "public domain (US Gov)",
+    "confidence": "high",
+    "confidence_reason": "Based on NASA HRP documentation of astronaut psychological health.",
+    "context_notes": ""
+  }
+]

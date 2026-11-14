@@ -89,6 +89,11 @@
                         Health History
                     </a>
 
+                    <a href="#knowledge-section" class="nav-item">
+    <span>06</span>
+    ASTRA Assist
+</a>
+
                 </nav>
 
                 <div class="left-panel-footer">
@@ -272,6 +277,50 @@
                     </form>
 
                 </section>
+
+
+<!-- ASTRA ASSIST -->
+<section class="report-card" id="knowledge-section">
+
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">KNOWLEDGE SUPPORT SYSTEM</p>
+            <h3>ASTRA Assist</h3>
+        </div>
+
+        <span class="model-status">RESEARCH DATABASE</span>
+    </div>
+
+    <p class="section-description">
+        Ask a health-related question and explore information
+        from ASTRA's research knowledge base.
+    </p>
+
+    <form id="knowledge-form">
+
+        <div class="form-group">
+            <label for="knowledge-question">
+                YOUR QUESTION
+            </label>
+
+            <textarea
+                id="knowledge-question"
+                rows="3"
+                placeholder="e.g. How does poor sleep affect astronauts?"
+                required
+            ></textarea>
+        </div>
+
+        <button type="submit" class="submit-report" id="knowledge-submit">
+            ASK ASTRA
+        </button>
+
+    </form>
+
+    <div id="knowledge-result" aria-live="polite"></div>
+
+</section>
+
 
             </section>
 

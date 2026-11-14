@@ -951,3 +951,60 @@ button {
         flex-direction: column;
     }
 }
+
+
+/* =====================================
+   ASTRA ASSIST - KNOWLEDGE RESULTS
+===================================== */
+
+#knowledge-result {
+    margin-top: 24px;
+    padding: 20px;
+    border: 1px solid rgba(80, 160, 220, 0.25);
+    border-radius: 8px;
+    background: rgba(10, 25, 45, 0.75);
+    color: #dce8f5;
+    line-height: 1.6;
+}
+
+#knowledge-result:empty {
+    display: none;
+}
+
+#knowledge-result h3 {
+    color: #62c5ff;
+    font-size: 20px;
+    margin-bottom: 18px;
+}
+
+#knowledge-result h4 {
+    color: #75bfff;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+#knowledge-result p {
+    color: #c0cede;
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 10px;
+}
+
+#knowledge-result ul {
+    padding-left: 20px;
+    margin-bottom: 12px;
+}
+
+#knowledge-result li {
+    color: #c0cede;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+#knowledge-submit:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}

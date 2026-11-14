@@ -691,6 +691,176 @@ document.getElementById("symptom-form").addEventListener(
 
 
 // =====================================
+// ASTRA ASSIST - KNOWLEDGE BASE
+// =====================================
+
+const knowledgeForm = document.getElementById("knowledge-form");
+const knowledgeQuestion = document.getElementById("knowledge-question");
+const knowledgeResult = document.getElementById("knowledge-result");
+const knowledgeSubmit = document.getElementById("knowledge-submit");
+
+
+if (knowledgeForm) {
+
+    knowledgeForm.addEventListener("submit", async (event) => {
+
+        event.preventDefault();
+
+        const question = knowledgeQuestion.value.trim();
+
+        if (!question) {
+            return;
+        }
+
+        knowledgeSubmit.disabled = true;
+        knowledgeSubmit.textContent = "SEARCHING...";
+        knowledgeResult.textContent = "Searching ASTRA's research database...";
+
+        try {
+
+            const response = await fetch(`${API_URL}/knowledge/ask`, {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    question: question
+                })
+
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || "Could not process your question.");
+            }
+
+            displayKnowledgeResult(result.data);
+
+        } catch (error) {
+
+            console.error("ASTRA Assist error:", error);
+
+            knowledgeResult.textContent =
+                "ASTRA Assist could not connect to the knowledge service. Check that the backend is running.";
+
+        } finally {
+
+            knowledgeSubmit.disabled = false;
+            knowledgeSubmit.textContent = "ASK ASTRA";
+
+        }
+
+    });
+
+}
+
+
+// =====================================
+// DISPLAY KNOWLEDGE RESULTS
+// =====================================
+
+function displayKnowledgeResult(data) {
+
+    knowledgeResult.replaceChildren();
+
+    if (!data.found) {
+
+        const message = document.createElement("p");
+        message.textContent = data.message;
+
+        const recommendation = document.createElement("p");
+        recommendation.textContent = data.recommendation;
+
+        knowledgeResult.append(message, recommendation);
+
+        return;
+    }
+
+    const title = document.createElement("h3");
+    title.textContent = data.topic.title;
+
+    knowledgeResult.appendChild(title);
+
+    const sections = [
+        ["Explanation", data.answer.explanation],
+        ["Spaceflight Context", data.answer.spaceflightContext],
+        ["Warning Signs", data.answer.warningSigns],
+        ["Escalation Guidance", data.answer.escalationGuidance],
+        ["General Actions", data.answer.generalActions],
+        ["Measurement Notes", data.answer.measurementNotes]
+    ];
+
+    sections.forEach(([heading, content]) => {
+
+        if (!content || (Array.isArray(content) && content.length === 0)) {
+            return;
+        }
+
+        const section = document.createElement("div");
+
+        const sectionHeading = document.createElement("h4");
+        sectionHeading.textContent = heading;
+
+        section.appendChild(sectionHeading);
+
+        if (Array.isArray(content)) {
+
+            const list = document.createElement("ul");
+
+            content.forEach(item => {
+
+                const listItem = document.createElement("li");
+                listItem.textContent = item;
+
+                list.appendChild(listItem);
+
+            });
+
+            section.appendChild(list);
+
+        } else {
+
+            const paragraph = document.createElement("p");
+            paragraph.textContent = content;
+
+            section.appendChild(paragraph);
+
+        }
+
+        knowledgeResult.appendChild(section);
+
+    });
+
+
+    // SOURCE INFORMATION
+
+    const sourceHeading = document.createElement("h4");
+    sourceHeading.textContent = "Research Source";
+
+    const source = document.createElement("p");
+
+    source.textContent =
+        `${data.source.title} — ${data.source.organisation} (${data.source.date})`;
+
+    knowledgeResult.append(sourceHeading, source);
+
+
+    // DISCLAIMER
+
+    const disclaimer = document.createElement("p");
+    disclaimer.textContent = data.disclaimer;
+
+    knowledgeResult.appendChild(disclaimer);
+
+}
+
+
+
+// =====================================
 // REFRESH DASHBOARD
 // =====================================
 
