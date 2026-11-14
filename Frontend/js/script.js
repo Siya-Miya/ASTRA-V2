@@ -1,20 +1,477 @@
 
+import * as THREE from "three";
+
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
+
+
 // =====================================
-// ASTRA V2 - DASHBOARD CONNECTION
+// ASTRA V2 - CONFIGURATION
 // =====================================
 
 const API_URL = "http://localhost:3000/api";
-
-// Select astronaut using URL parameter.
-// Example: index.html?astronaut=1
 
 const params = new URLSearchParams(window.location.search);
 
 const astronautId = Number(params.get("astronaut")) || 1;
 
+// Change to "female" to use the other available anatomy model.
+const bodyType = params.get("body") === "female" ? "female" : "male";
+
+const MODEL_URL =
+    `https://cdn.jsdelivr.net/npm/open-anatomy-3d@0.1.0/models/anatomy-${bodyType}.glb`;
+
 
 // =====================================
-// LOAD CREW MEMBERS
+// THREE.JS VARIABLES
+// =====================================
+
+const canvas = document.getElementById("body-canvas");
+
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(
+    35,
+    1,
+    0.1,
+    100
+);
+
+camera.position.set(0, 1.7, 5.5);
+
+const renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
+    antialias: true,
+    alpha: true
+});
+
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+renderer.toneMappingExposure = 1.2;
+
+
+// =====================================
+// LIGHTING
+// =====================================
+
+const ambientLight = new THREE.HemisphereLight(
+    0xdceeff,
+    0x15243a,
+    2.2
+);
+
+scene.add(ambientLight);
+
+
+const mainLight = new THREE.DirectionalLight(
+    0xffffff,
+    3
+);
+
+mainLight.position.set(3, 5, 5);
+
+scene.add(mainLight);
+
+
+const blueLight = new THREE.PointLight(
+    0x398bff,
+    25,
+    10
+);
+
+blueLight.position.set(-3, 2, 2);
+
+scene.add(blueLight);
+
+
+const backLight = new THREE.DirectionalLight(
+    0x55d6e8,
+    2
+);
+
+backLight.position.set(0, 3, -4);
+
+scene.add(backLight);
+
+
+// =====================================
+// CAMERA CONTROLS
+// =====================================
+
+const controls = new OrbitControls(camera, canvas);
+
+controls.enableDamping = true;
+
+controls.dampingFactor = 0.06;
+
+controls.enablePan = false;
+
+controls.minDistance = 2.5;
+
+controls.maxDistance = 9;
+
+controls.target.set(0, 1.5, 0);
+
+
+// =====================================
+// LOAD ANATOMICAL MODEL
+// =====================================
+
+let anatomicalModel = null;
+
+let modelBounds = null;
+
+let selectedObject = null;
+
+let originalMaterial = null;
+
+let selectedRegionName = null;
+
+const loader = new GLTFLoader();
+
+loader.setMeshoptDecoder(MeshoptDecoder);
+
+
+async function loadAnatomicalModel() {
+
+    const loadingScreen = document.getElementById("model-loading");
+
+    const modelStatus = document.getElementById("model-status");
+
+    try {
+
+        modelStatus.textContent = "DOWNLOADING ANATOMY";
+
+        const gltf = await loader.loadAsync(MODEL_URL);
+
+        anatomicalModel = gltf.scene;
+
+        // Add the model to the scene.
+        scene.add(anatomicalModel);
+
+        // Find the model's dimensions.
+        const initialBounds = new THREE.Box3().setFromObject(
+            anatomicalModel
+        );
+
+        const size = initialBounds.getSize(new THREE.Vector3());
+
+        const center = initialBounds.getCenter(new THREE.Vector3());
+
+        // Centre the model horizontally.
+        anatomicalModel.position.x = -center.x;
+
+        anatomicalModel.position.z = -center.z;
+
+        anatomicalModel.position.y = -initialBounds.min.y;
+
+        // Scale the model to fit the viewer.
+        const targetHeight = 3.2;
+
+        const scale = targetHeight / size.y;
+
+        anatomicalModel.scale.setScalar(scale);
+
+        // Make the outer skin translucent so internal anatomy
+        // can be explored.
+        const skin = anatomicalModel.getObjectByName("skin");
+
+        if (skin) {
+
+            skin.traverse(object => {
+
+                if (!object.isMesh) return;
+
+                object.material = object.material.clone();
+
+                object.material.transparent = true;
+
+                object.material.opacity = 0.14;
+
+                object.material.depthWrite = false;
+
+            });
+
+        }
+
+        anatomicalModel.traverse(object => {
+
+            if (!object.isMesh) return;
+
+            object.frustumCulled = true;
+
+        });
+
+        modelBounds = new THREE.Box3().setFromObject(
+            anatomicalModel
+        );
+
+        // Set the camera target to the model's centre.
+        const modelCenter = modelBounds.getCenter(
+            new THREE.Vector3()
+        );
+
+        controls.target.copy(modelCenter);
+
+        camera.position.set(
+            modelCenter.x,
+            modelCenter.y + 0.1,
+            modelCenter.z + 5.5
+        );
+
+        controls.update();
+
+        loadingScreen.classList.add("hidden");
+
+        modelStatus.textContent = "ANATOMY MODEL ONLINE";
+
+        console.log("ASTRA anatomical model loaded.");
+
+    } catch (error) {
+
+        console.error("Anatomical model loading error:", error);
+
+        modelStatus.textContent = "MODEL UNAVAILABLE";
+
+        loadingScreen.innerHTML = `
+            <p>Unable to load anatomical model.</p>
+            <p>Check your internet connection and refresh.</p>
+        `;
+
+    }
+
+}
+
+
+// =====================================
+// RESIZE THE 3D VIEWER
+// =====================================
+
+function resizeViewer() {
+
+    const width = canvas.clientWidth;
+
+    const height = canvas.clientHeight;
+
+    if (!width || !height) return;
+
+    camera.aspect = width / height;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(width, height, false);
+
+}
+
+const resizeObserver = new ResizeObserver(resizeViewer);
+
+resizeObserver.observe(canvas.parentElement);
+
+resizeViewer();
+
+
+// =====================================
+// ANIMATION LOOP
+// =====================================
+
+let autoRotate = false;
+
+function animate() {
+
+    requestAnimationFrame(animate);
+
+    if (autoRotate && anatomicalModel) {
+
+        anatomicalModel.rotation.y += 0.003;
+
+    }
+
+    controls.update();
+
+    renderer.render(scene, camera);
+
+}
+
+animate();
+
+
+// =====================================
+// BODY REGION SELECTION
+// =====================================
+
+const raycaster = new THREE.Raycaster();
+
+const pointer = new THREE.Vector2();
+
+let pointerStartX = 0;
+
+let pointerStartY = 0;
+
+
+function identifyBodyRegion(point) {
+
+    if (!modelBounds) return "General";
+
+    const size = modelBounds.getSize(new THREE.Vector3());
+
+    const center = modelBounds.getCenter(new THREE.Vector3());
+
+    const normalizedY = (point.y - modelBounds.min.y) / size.y;
+
+    const normalizedX = Math.abs(point.x - center.x) / size.x;
+
+    // Arms are identified by their horizontal position.
+    if (normalizedX > 0.27 && normalizedY > 0.2 && normalizedY < 0.82) {
+        return "Arms";
+    }
+
+    if (normalizedY > 0.84) return "Head";
+
+    if (normalizedY > 0.76) return "Neck";
+
+    if (normalizedY > 0.53) return "Chest";
+
+    if (normalizedY > 0.38) return "Abdomen";
+
+    if (normalizedY > 0.25) return "Pelvis";
+
+    return "Legs";
+
+}
+
+
+function selectBodyRegion(region) {
+
+    selectedRegionName = region;
+
+    document.getElementById("selected-region").textContent =
+        `${region} selected`;
+
+    document.getElementById("symptom-region").value =
+        region;
+
+    document.getElementById("report-region-button").disabled =
+        false;
+
+}
+
+
+canvas.addEventListener("pointerdown", event => {
+
+    pointerStartX = event.clientX;
+
+    pointerStartY = event.clientY;
+
+});
+
+
+canvas.addEventListener("pointerup", event => {
+
+    // Ignore movements because they are camera rotation.
+    const movement = Math.hypot(
+        event.clientX - pointerStartX,
+        event.clientY - pointerStartY
+    );
+
+    if (movement > 5 || !anatomicalModel) return;
+
+    const rect = canvas.getBoundingClientRect();
+
+    pointer.x = (
+        (event.clientX - rect.left) / rect.width
+    ) * 2 - 1;
+
+    pointer.y = -(
+        (event.clientY - rect.top) / rect.height
+    ) * 2 + 1;
+
+    raycaster.setFromCamera(pointer, camera);
+
+    const intersections = raycaster.intersectObject(
+        anatomicalModel,
+        true
+    );
+
+    if (intersections.length === 0) return;
+
+    const region = identifyBodyRegion(
+        intersections[0].point
+    );
+
+    selectBodyRegion(region);
+
+});
+
+
+// =====================================
+// VIEWER BUTTONS
+// =====================================
+
+document.getElementById("rotate-button").addEventListener(
+    "click",
+    () => {
+
+        autoRotate = !autoRotate;
+
+        document.getElementById("rotate-button").textContent =
+            autoRotate ? "STOP ROTATION" : "ROTATE";
+
+    }
+);
+
+
+document.getElementById("reset-view-button").addEventListener(
+    "click",
+    () => {
+
+        if (!modelBounds) return;
+
+        anatomicalModel.rotation.set(0, 0, 0);
+
+        autoRotate = false;
+
+        document.getElementById("rotate-button").textContent =
+            "ROTATE";
+
+        const center = modelBounds.getCenter(
+            new THREE.Vector3()
+        );
+
+        camera.position.set(
+            center.x,
+            center.y + 0.1,
+            center.z + 5.5
+        );
+
+        controls.target.copy(center);
+
+        controls.update();
+
+    }
+);
+
+
+document.getElementById("report-region-button").addEventListener(
+    "click",
+    () => {
+
+        document.getElementById("report-section").scrollIntoView({
+            behavior: "smooth"
+        });
+
+        document.getElementById("symptom-description").focus();
+
+    }
+);
+
+
+// =====================================
+// LOAD CREW
 // =====================================
 
 async function loadCrew() {
@@ -24,7 +481,7 @@ async function loadCrew() {
         const response = await fetch(`${API_URL}/crew`);
 
         if (!response.ok) {
-            throw new Error("Could not retrieve crew members.");
+            throw new Error("Could not retrieve crew.");
         }
 
         const crew = await response.json();
@@ -46,8 +503,6 @@ async function loadCrew() {
         document.getElementById("astronaut-role").textContent =
             astronaut.role;
 
-        renderCrew(crew);
-
     } catch (error) {
 
         console.error("Crew loading error:", error);
@@ -58,38 +513,7 @@ async function loadCrew() {
 
 
 // =====================================
-// DISPLAY CREW MEMBERS
-// =====================================
-
-function renderCrew(crew) {
-
-    const container = document.getElementById("crew-container");
-
-    container.innerHTML = "";
-
-    crew.forEach(member => {
-
-        const crewMember = document.createElement("div");
-
-        crewMember.className = "crew-member";
-
-        crewMember.innerHTML = `
-            <div>
-                <strong>${member.name}</strong>
-                <p>${member.crew_code}</p>
-            </div>
-            <span>CREW MEMBER</span>
-        `;
-
-        container.appendChild(crewMember);
-
-    });
-
-}
-
-
-// =====================================
-// LOAD ASTRONAUT READINGS
+// LOAD VITAL READINGS
 // =====================================
 
 async function loadReadings() {
@@ -106,68 +530,60 @@ async function loadReadings() {
 
         const readings = await response.json();
 
-        if (readings.length === 0) {
-            return;
-        }
+        if (readings.length === 0) return;
 
-        // Find the latest reading for each metric.
-        const latestReadings = {};
+        const latest = {};
 
         readings.forEach(reading => {
 
-            if (!latestReadings[reading.metric]) {
-                latestReadings[reading.metric] = reading;
+            if (!latest[reading.metric]) {
+                latest[reading.metric] = reading;
             }
 
         });
 
-        // Update heart rate.
-        if (latestReadings.heart_rate) {
+        if (latest.heart_rate) {
 
             document.getElementById("heart-rate").textContent =
-                Number(latestReadings.heart_rate.value).toFixed(1);
+                Number(latest.heart_rate.value).toFixed(1);
 
         }
 
-        // Update oxygen saturation.
-        if (latestReadings.oxygen_saturation) {
+        if (latest.oxygen_saturation) {
 
             document.getElementById("oxygen").textContent =
-                Number(latestReadings.oxygen_saturation.value).toFixed(1);
+                Number(latest.oxygen_saturation.value).toFixed(1);
 
         }
 
-        // Update body temperature.
-        if (latestReadings.body_temperature) {
+        if (latest.body_temperature) {
 
             document.getElementById("temperature").textContent =
-                Number(latestReadings.body_temperature.value).toFixed(1);
+                Number(latest.body_temperature.value).toFixed(1);
 
         }
 
-        // Display latest reading timestamp.
-        const timestamps = Object.values(latestReadings)
-            .map(reading => new Date(
+        const timestamps = Object.values(latest).map(reading =>
+            new Date(
                 reading.recorded_at.replace(" ", "T") + "Z"
-            ).getTime());
-
-        const latestTimestamp = new Date(Math.max(...timestamps));
+            ).getTime()
+        );
 
         document.getElementById("last-updated").textContent =
-            latestTimestamp.toLocaleTimeString();
+            new Date(Math.max(...timestamps)).toLocaleTimeString();
 
         document.getElementById("sensor-status").textContent =
-            "Receiving data";
+            "RECEIVING SENSOR DATA";
 
         document.getElementById("health-status").textContent =
-            "Data available";
+            "DATA AVAILABLE";
 
     } catch (error) {
 
         console.error("Reading loading error:", error);
 
         document.getElementById("sensor-status").textContent =
-            "Connection error";
+            "CONNECTION ERROR";
 
     }
 
@@ -190,12 +606,12 @@ async function loadAlerts() {
 
         const alerts = await response.json();
 
-        // Only show alerts for the selected astronaut
-        // that have not been resolved.
+        const crewCode =
+            `ASTRA-${String(astronautId).padStart(3, "0")}`;
 
         const activeAlerts = alerts.filter(alert =>
-            alert.status !== "resolved" &&
-            alert.crew_code === `ASTRA-${String(astronautId).padStart(3, "0")}`
+            alert.crew_code === crewCode &&
+            alert.status !== "resolved"
         );
 
         document.getElementById("alert-count").textContent =
@@ -209,7 +625,7 @@ async function loadAlerts() {
         if (activeAlerts.length === 0) {
 
             container.innerHTML =
-                '<p class="empty-state">No active alerts.</p>';
+                '<p class="empty-state">No active notifications.</p>';
 
             return;
 
@@ -217,25 +633,29 @@ async function loadAlerts() {
 
         activeAlerts.forEach(alert => {
 
-            const alertElement = document.createElement("div");
+            const item = document.createElement("div");
 
-            alertElement.className =
-                `alert-item ${alert.severity}`;
+            item.className = `alert-item ${alert.severity}`;
 
             const heading = document.createElement("strong");
+
             heading.textContent = alert.severity.toUpperCase();
 
             const message = document.createElement("p");
+
             message.textContent = alert.message;
 
             const timestamp = document.createElement("small");
+
             timestamp.textContent = alert.triggered_at;
 
-            alertElement.appendChild(heading);
-            alertElement.appendChild(message);
-            alertElement.appendChild(timestamp);
+            item.appendChild(heading);
 
-            container.appendChild(alertElement);
+            item.appendChild(message);
+
+            item.appendChild(timestamp);
+
+            container.appendChild(item);
 
         });
 
@@ -249,13 +669,34 @@ async function loadAlerts() {
 
 
 // =====================================
+// SYMPTOM REPORT FORM
+// =====================================
+
+document.getElementById("symptom-form").addEventListener(
+    "submit",
+    event => {
+
+        event.preventDefault();
+
+        const message =
+            document.getElementById("report-message");
+
+        message.className = "form-message";
+
+        message.textContent =
+            "The reporting interface is ready. We still need to connect it to the health-report API.";
+
+    }
+);
+
+
+// =====================================
 // REFRESH DASHBOARD
 // =====================================
 
 async function refreshDashboard() {
 
     await Promise.all([
-        loadCrew(),
         loadReadings(),
         loadAlerts()
     ]);
@@ -263,9 +704,17 @@ async function refreshDashboard() {
 }
 
 
-// Initial dashboard load.
-refreshDashboard();
+async function initialiseDashboard() {
 
+    await Promise.all([
+        loadAnatomicalModel(),
+        loadCrew()
+    ]);
 
-// Refresh data every five seconds.
-setInterval(refreshDashboard, 5000);
+    await refreshDashboard();
+
+    setInterval(refreshDashboard, 5000);
+
+}
+
+initialiseDashboard();
