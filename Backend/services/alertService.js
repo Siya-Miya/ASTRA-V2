@@ -1,3 +1,4 @@
+
 const db = require("../database/connection");
 
 // Demo-only rules.
@@ -8,10 +9,10 @@ const alertRules = {
     heart_rate: {
         threshold: 100,
         persistenceSeconds: 20,
+        windowSeconds: 35,
         minimumReadings: 5
     }
 };
-
 
 function evaluateReading(crewId, metric) {
 
@@ -22,7 +23,7 @@ function evaluateReading(crewId, metric) {
         return null;
     }
 
-    // Retrieve recent readings within the persistence window
+    // Retrieve recent readings within the evaluation window
     const recent = db.prepare(`
         SELECT
             COUNT(*) AS total,
@@ -36,15 +37,15 @@ function evaluateReading(crewId, metric) {
     `).get(
         crewId,
         metric,
-        `-${rule.persistenceSeconds} seconds`
+        `-${rule.windowSeconds} seconds`
     );
 
-    // Not enough readings to evaluate persistence
+    // Not enough readings
     if (recent.total < rule.minimumReadings) {
         return null;
     }
 
-    // Check whether the readings span the required duration
+    // Calculate how long the readings have persisted
     const duration = db.prepare(`
         SELECT
             (julianday(?) - julianday(?)) * 86400 AS seconds
@@ -57,7 +58,7 @@ function evaluateReading(crewId, metric) {
         return null;
     }
 
-    // Every reading in the window must exceed the demo threshold
+    // Every reading must exceed the demo threshold
     if (recent.minimum <= rule.threshold) {
         return null;
     }
@@ -97,6 +98,5 @@ function evaluateReading(crewId, metric) {
 
     return result.lastInsertRowid;
 }
-
 
 module.exports = { evaluateReading };

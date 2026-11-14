@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASTRA | Crew Health Monitoring</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="brand">
+                <h1>ASTRA<span>.</span></h1>
+                <p>CREW HEALTH SYSTEM</p>
+            </div>
+
+            <nav class="navigation">
+                <a href="#" class="nav-link active">Overview</a>
+                <a href="#" class="nav-link">Health Reports</a>
+                <a href="#" class="nav-link">Medical Guidance</a>
+                <a href="#" class="nav-link">Mission Environment</a>
+                <a href="#" class="nav-link">Alert History</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p>MISSION CONTROL SYSTEM</p>
+                <span>ASTRA V2.0</span>
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <!-- TOP BAR -->
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">MISSION HEALTH MONITORING</p>
+                    <h2>Crew Overview</h2>
+                </div>
+
+                <div class="system-status">
+                    <span class="status-indicator"></span>
+                    <span> SYSTEM ONLINE</span>
+                </div>
+            </header>
+
+
+            <!-- ASTRONAUT PROFILE -->
+            <section class="astronaut-section">
+
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">PERSONAL HEALTH PROFILE</p>
+                        <h2 id="astronaut-name">Loading astronaut...</h2>
+                    </div>
+
+                    <span id="crew-code">ASTRA-001</span>
+                </div>
+
+                <div class="profile-summary">
+                    <div class="profile-item">
+                        <p>MISSION ROLE</p>
+                        <h3 id="astronaut-role">Crew Member</h3>
+                    </div>
+
+                    <div class="profile-item">
+                        <p>HEALTH STATUS</p>
+                        <h3 id="health-status">Awaiting data</h3>
+                    </div>
+
+                    <div class="profile-item">
+                        <p>SENSOR STATUS</p>
+                        <h3 id="sensor-status">Checking...</h3>
+                    </div>
+                </div>
+
+            </section>
+
+
+            <!-- VITALS -->
+            <section class="vitals-section">
+
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">PHYSIOLOGICAL MONITORING</p>
+                        <h2>Live Vital Signs</h2>
+                    </div>
+                    <span class="live-label">LIVE DATA</span>
+                </div>
+
+                <div class="vitals-grid">
+
+                    <article class="vital-card">
+                        <p>HEART RATE</p>
+                        <h3 id="heart-rate">--</h3>
+                        <span>bpm</span>
+                    </article>
+
+                    <article class="vital-card">
+                        <p>BLOOD OXYGEN</p>
+                        <h3 id="oxygen">--</h3>
+                        <span>% SpO₂</span>
+                    </article>
+
+                    <article class="vital-card">
+                        <p>BODY TEMPERATURE</p>
+                        <h3 id="temperature">--</h3>
+                        <span>°C</span>
+                    </article>
+
+                </div>
+
+                <p class="last-updated">
+                    Last updated: <span id="last-updated">Waiting for readings...</span>
+                </p>
+
+            </section>
+
+
+            <!-- ALERTS AND CREW -->
+            <section class="lower-grid">
+
+                <div class="panel alerts-panel">
+                    <div class="section-heading">
+                        <div>
+                            <p class="eyebrow">SYSTEM NOTIFICATIONS</p>
+                            <h2>Active Alerts</h2>
+                        </div>
+                        <span id="alert-count">0</span>
+                    </div>
+
+                    <div id="alerts-container">
+                        <p class="empty-state">No active alerts.</p>
+                    </div>
+                </div>
+
+
+                <div class="panel crew-panel">
+                    <div class="section-heading">
+                        <div>
+                            <p class="eyebrow">CREW STATUS</p>
+                            <h2>Mission Crew</h2>
+                        </div>
+                    </div>
+
+                    <div id="crew-container">
+                        <p class="empty-state">Loading crew members...</p>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+<script src="js/script.js" ></script>
+</body>
+</html>

@@ -1,0 +1,372 @@
+
+/* =====================================
+   ASTRA V2 - GLOBAL STYLES
+===================================== */
+
+:root {
+    --background: #080d16;
+    --sidebar: #0b1320;
+    --panel: #101b2a;
+    --panel-light: #142338;
+
+    --border: #23354b;
+
+    --blue: #398bff;
+    --cyan: #55d6e8;
+
+    --text: #e7edf5;
+    --muted: #8495aa;
+
+    --red: #ff5364;
+    --amber: #f5b942;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--background);
+    color: var(--text);
+}
+
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+
+/* =====================================
+   SIDEBAR
+===================================== */
+
+.sidebar {
+    width: 245px;
+    min-height: 100vh;
+    background: var(--sidebar);
+    border-right: 1px solid var(--border);
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 30px 20px;
+}
+
+.brand h1 {
+    font-size: 30px;
+    letter-spacing: 3px;
+    color: var(--text);
+}
+
+.brand h1 span {
+    color: var(--cyan);
+}
+
+.brand p {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin-top: 5px;
+}
+
+.navigation {
+    margin-top: 65px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--muted);
+    padding: 13px 14px;
+    border-radius: 5px;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: #142b45;
+    color: var(--cyan);
+    border-left: 3px solid var(--blue);
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+}
+
+.sidebar-footer p {
+    color: var(--muted);
+    font-size: 9px;
+    letter-spacing: 1px;
+}
+
+.sidebar-footer span {
+    display: block;
+    margin-top: 8px;
+    color: var(--cyan);
+    font-size: 12px;
+}
+
+
+/* =====================================
+   MAIN CONTENT
+===================================== */
+
+.main-content {
+    flex: 1;
+    padding: 35px;
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+
+.eyebrow {
+    color: var(--cyan);
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin-bottom: 9px;
+}
+
+.topbar h2 {
+    font-size: 25px;
+    font-weight: 500;
+}
+
+.system-status {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    background: var(--cyan);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--cyan);
+}
+
+
+/* =====================================
+   SECTIONS AND PANELS
+===================================== */
+
+.astronaut-section,
+.panel,
+.vital-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+}
+
+.astronaut-section {
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.section-heading h2 {
+    font-size: 19px;
+    font-weight: 500;
+}
+
+#crew-code {
+    color: var(--cyan);
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.profile-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+}
+
+.profile-item p {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 1px;
+    margin-bottom: 9px;
+}
+
+.profile-item h3 {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+/* =====================================
+   VITAL SIGNS
+===================================== */
+
+.vitals-section {
+    margin-bottom: 25px;
+}
+
+.live-label {
+    color: var(--cyan);
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.vitals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.vital-card {
+    padding: 23px;
+    border-top: 2px solid var(--blue);
+}
+
+.vital-card p {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.vital-card h3 {
+    font-size: 36px;
+    margin-top: 18px;
+    display: inline-block;
+    font-weight: 500;
+}
+
+.vital-card span {
+    color: var(--muted);
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.last-updated {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 12px;
+}
+
+
+/* =====================================
+   ALERTS AND CREW
+===================================== */
+
+.lower-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 20px;
+}
+
+.panel {
+    padding: 23px;
+    min-width: 0;
+}
+
+#alert-count {
+    background: #38202a;
+    color: var(--red);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.empty-state {
+    color: var(--muted);
+    font-size: 12px;
+    padding: 15px 0;
+}
+
+.last-updated span {
+    color: var(--cyan);
+}
+
+
+/* =====================================
+   RESPONSIVE DESIGN
+===================================== */
+
+@media (max-width: 900px) {
+
+    .sidebar {
+        width: 200px;
+    }
+
+    .main-content {
+        padding: 25px;
+    }
+
+    .lower-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 650px) {
+
+    .app-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-height: auto;
+        padding: 18px;
+    }
+
+    .navigation {
+        margin-top: 20px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .nav-link {
+        padding: 9px;
+        font-size: 11px;
+    }
+
+    .sidebar-footer {
+        display: none;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .vitals-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .topbar {
+        align-items: flex-start;
+        gap: 15px;
+        flex-direction: column;
+    }
+}
