@@ -1008,3 +1008,111 @@ button {
     opacity: 0.6;
     cursor: wait;
 }
+
+
+
+/* =====================================
+   DASHBOARD HEALTH OVERVIEW
+===================================== */
+
+.dashboard-overview {
+    margin-bottom: 22px;
+    padding: 21px;
+
+    background: rgba(12, 23, 37, 0.92);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.overview-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.overview-heading h3 {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.overview-label {
+    color: var(--muted);
+    font-size: 8px;
+    letter-spacing: 1px;
+}
+
+.overview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.overview-card {
+    padding: 15px;
+    min-width: 0;
+
+    background: var(--surface-light);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+.overview-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    color: var(--muted);
+    font-size: 8px;
+    letter-spacing: 0.7px;
+    gap: 5px;
+}
+
+.overview-icon {
+    font-size: 16px;
+}
+
+.overview-icon.red {
+    color: var(--red);
+}
+
+.overview-icon.blue {
+    color: var(--blue);
+}
+
+.overview-icon.amber {
+    color: var(--amber);
+}
+
+.overview-reading {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin: 17px 0 8px;
+}
+
+.overview-reading strong {
+    font-size: 27px;
+    font-weight: 500;
+}
+
+.overview-reading span {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.overview-card small {
+    color: var(--muted);
+    font-size: 9px;
+}
+
+@media (max-width: 550px) {
+    .overview-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .overview-heading {
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
