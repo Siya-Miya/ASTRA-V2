@@ -1,11 +1,18 @@
-
 [
   {
     "card_id": "heart-rate",
     "title": "Heart Rate",
     "category": "vital_sign",
-    "tags": ["heart_rate", "pulse", "chest", "tachycardia", "bradycardia"],
-    "body_regions": ["chest"],
+    "tags": [
+      "heart_rate",
+      "pulse",
+      "chest",
+      "tachycardia",
+      "bradycardia"
+    ],
+    "body_regions": [
+      "chest"
+    ],
     "what_it_is": "Heart rate is the number of times the heart beats per minute, a basic measure of cardiovascular activity【21†L277-L284】. It indicates how hard the heart is working to pump blood.",
     "spaceflight_effect": "In microgravity, fluid shifts and cardiac adaptations alter heart rate. Studies report short-term missions see a ~10–20% increase in resting heart rate【25†L299-L307】, and long missions show about a 20% rise【25†L284-L292】. On return to Earth, reduced blood volume and orthostatic stress cause heart rate to be higher than normal (e.g. ~+21 bpm when standing postflight【26†L410-L418】).",
     "red_flags": [
@@ -33,8 +40,16 @@
     "card_id": "blood-pressure",
     "title": "Blood Pressure",
     "category": "vital_sign",
-    "tags": ["blood_pressure", "hypertension", "hypotension", "chest", "dizziness"],
-    "body_regions": ["chest"],
+    "tags": [
+      "blood_pressure",
+      "hypertension",
+      "hypotension",
+      "chest",
+      "dizziness"
+    ],
+    "body_regions": [
+      "chest"
+    ],
     "what_it_is": "Blood pressure is the force of blood against the walls of arteries as the heart pumps【34†L31-L34】. It is given as two numbers: systolic (pressure during heartbeat) over diastolic (pressure between beats).",
     "spaceflight_effect": "Microgravity alters circulation but resting pressure is often maintained. One bed-rest study reported a ~16.7% rise in systolic pressure【25†L367-L370】, while others (e.g. ISS data) show mean arterial pressure is unchanged in space【26†L441-L444】. Returning astronauts may experience orthostatic hypotension (low standing pressure).",
     "red_flags": [
@@ -62,8 +77,16 @@
     "card_id": "oxygen-saturation",
     "title": "Blood Oxygen Saturation (SpO₂)",
     "category": "vital_sign",
-    "tags": ["SpO2", "oxygen", "hypoxemia", "chest", "shortness_of_breath"],
-    "body_regions": ["chest"],
+    "tags": [
+      "SpO2",
+      "oxygen",
+      "hypoxemia",
+      "chest",
+      "shortness_of_breath"
+    ],
+    "body_regions": [
+      "chest"
+    ],
     "what_it_is": "Oxygen saturation (SpO₂) is the percentage of hemoglobin in the blood carrying oxygen【38†L25-L30】. It is measured with a pulse oximeter (often at a fingertip) and normally ranges from about 95% to 100% in a healthy person at normal atmospheric pressure【38†L29-L31】.",
     "spaceflight_effect": "In a properly oxygenated spacecraft environment, SpO₂ remains near normal【38†L29-L31】. The literature does not report unique microgravity effects on oxygen saturation (not established in sources). Astronauts use controlled cabin oxygen, so SpO₂ typically stays normal unless technical or medical issues arise.",
     "red_flags": [
@@ -92,8 +115,16 @@
     "card_id": "body-temperature",
     "title": "Body Temperature",
     "category": "vital_sign",
-    "tags": ["body_temperature", "fever", "hypothermia", "head"],
-    "body_regions": ["chest", "head"],
+    "tags": [
+      "body_temperature",
+      "fever",
+      "hypothermia",
+      "head"
+    ],
+    "body_regions": [
+      "chest",
+      "head"
+    ],
     "what_it_is": "Body temperature is the measure of how hot the body's core is. A healthy individual’s core temperature is about 37°C (98.6°F)【48†L28-L31】, typically within ±0.5°C.",
     "spaceflight_effect": "Effects of microgravity on normal body temperature are not clearly documented in sources ('not established in sources'). There is no reported standard change in baseline temperature due to spaceflight.",
     "red_flags": [
@@ -122,8 +153,15 @@
     "card_id": "breathing-rate",
     "title": "Breathing Rate (Respiratory Rate)",
     "category": "vital_sign",
-    "tags": ["respiratory_rate", "breathing_rate", "tachypnea", "dyspnea"],
-    "body_regions": ["chest"],
+    "tags": [
+      "respiratory_rate",
+      "breathing_rate",
+      "tachypnea",
+      "dyspnea"
+    ],
+    "body_regions": [
+      "chest"
+    ],
     "what_it_is": "Breathing rate is the number of breaths per minute, measuring how often a person inhales and exhales【58†L99-L102】. It reflects respiratory function and overall metabolic activity.",
     "spaceflight_effect": "The effect of microgravity on resting breathing rate is not clearly documented ('not established in sources'). Closed-environment factors (like higher CO₂) could slightly raise respiratory drive, but standard spaceflight keeps respiration within normal limits.",
     "red_flags": [
@@ -151,8 +189,16 @@
     "card_id": "blood-glucose",
     "title": "Blood Glucose",
     "category": "vital_sign",
-    "tags": ["blood_glucose", "sugar", "diabetes", "hypoglycemia", "abdomen"],
-    "body_regions": ["abdomen"],
+    "tags": [
+      "blood_glucose",
+      "sugar",
+      "diabetes",
+      "hypoglycemia",
+      "abdomen"
+    ],
+    "body_regions": [
+      "abdomen"
+    ],
     "what_it_is": "Blood glucose is the amount of sugar (glucose) in the blood, used by cells for energy. Normal fasting levels for healthy adults are roughly 70–100 mg/dL【63†L212-L214】.",
     "spaceflight_effect": "No direct microgravity effect on glucose is documented in sources. However, appetite changes and dietary differences in space can affect blood sugar regulation.",
     "red_flags": [
@@ -180,8 +226,15 @@
     "card_id": "sleep-disturbance",
     "title": "Sleep Quality and Duration",
     "category": "vital_sign",
-    "tags": ["sleep", "insomnia", "fatigue", "circadian"],
-    "body_regions": ["head"],
+    "tags": [
+      "sleep",
+      "insomnia",
+      "fatigue",
+      "circadian"
+    ],
+    "body_regions": [
+      "head"
+    ],
     "what_it_is": "Sleep is a period of rest with reduced awareness and activity. Healthy adults typically need about 7–9 hours per night【69†L106-L110】.",
     "spaceflight_effect": "Astronauts often sleep less in space: studies report an average of ~6 hours per night on ISS【65†L21-L24】, less than on Earth, due to altered light/dark cues (16 sunrises per day) and demanding schedules. Poor sleep can reduce alertness and performance【65†L21-L24】.",
     "red_flags": [
@@ -210,7 +263,13 @@
     "card_id": "behavioral-health",
     "title": "Mood and Behavioral Health",
     "category": "vital_sign",
-    "tags": ["mood", "anxiety", "depression", "behavioral", "mental_health"],
+    "tags": [
+      "mood",
+      "anxiety",
+      "depression",
+      "behavioral",
+      "mental_health"
+    ],
     "body_regions": [],
     "what_it_is": "Mood/behavioral health refers to a person’s emotional and psychological state. It includes feelings (e.g. happiness, anxiety) and behavior patterns. Astronauts self-report mood and undergo regular psychological assessments.",
     "spaceflight_effect": "Prolonged isolation, confinement, and separation from Earth can increase risk of anxiety and depression【74†L326-L329】. These stressors may also affect sleep and morale. Communication delays on deep-space missions will create new challenges.",

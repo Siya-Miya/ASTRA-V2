@@ -1,4 +1,3 @@
-
 /* =========================================
    ASTRA V2 — PERSONAL HEALTH STATION
 ========================================= */
@@ -179,9 +178,7 @@ button {
 
     display: grid;
     grid-template-columns:
-        var(--sidebar-width)
-        minmax(400px, 1fr)
-        var(--right-width);
+        var(--sidebar-width) minmax(400px, 1fr) var(--right-width);
 
     min-height: calc(100vh - 110px);
 }
@@ -515,7 +512,7 @@ button {
     border-top: 1px solid var(--border);
 }
 
-.body-card-footer > div {
+.body-card-footer>div {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -1298,13 +1295,13 @@ button {
     background: rgba(5, 12, 21, 0.35);
 }
 
-.history-details > p:first-child {
+.history-details>p:first-child {
     color: var(--muted);
     font-size: 10px;
     line-height: 1.6;
 }
 
-.history-details > p:last-of-type {
+.history-details>p:last-of-type {
     color: #c7d5e5;
     font-size: 11px;
     line-height: 1.7;
@@ -1398,7 +1395,7 @@ button {
 
 /* ASTRA RESPONSE */
 
-.history-details > strong {
+.history-details>strong {
     color: var(--cyan);
     font-size: 10px;
     letter-spacing: 1px;
@@ -1479,7 +1476,7 @@ button {
     border-radius: 6px;
 }
 
-.astra-response > strong {
+.astra-response>strong {
     color: var(--cyan);
     font-size: 11px;
     letter-spacing: 1px;
@@ -1504,7 +1501,7 @@ button {
     background: rgba(245, 185, 66, 0.1);
 }
 
-.astra-response > p,
+.astra-response>p,
 .astra-recommendation p {
     color: #c7d5e5;
     font-size: 11px;
@@ -1587,7 +1584,7 @@ button {
     border-top: 1px solid var(--border);
 }
 
-.crew-status-section > .panel-label {
+.crew-status-section>.panel-label {
     margin-bottom: 16px;
 }
 
@@ -1880,11 +1877,11 @@ button {
     gap: 9px;
 }
 
-.astra-sidebar .astra-response > strong {
+.astra-sidebar .astra-response>strong {
     font-size: 10px;
 }
 
-.astra-sidebar .astra-response > p,
+.astra-sidebar .astra-response>p,
 .astra-sidebar .astra-recommendation p {
     font-size: 10px;
 }
@@ -1907,4 +1904,56 @@ button {
         margin-top: 18px;
     }
 
+}
+
+/* ASTRA SPEECH CONTROLS */
+.astra-speech-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.astra-speech-controls button {
+    width: 100%;
+    padding: 11px 14px;
+    background: rgba(8, 25, 45, 0.9);
+    border: 1px solid #168ac4;
+    border-radius: 4px;
+    color: #75d8ff;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.astra-speech-controls button:hover {
+    background: rgba(0, 145, 210, 0.16);
+    border-color: #54cfff;
+    box-shadow: 0 0 12px rgba(0, 174, 255, 0.2);
+}
+
+.astra-speech-controls button:active {
+    transform: scale(0.98);
+}
+
+/* STOP SPEAKING STATE */
+#read-aloud-button.speaking {
+    border-color: #e05252;
+    color: #ff7777;
+    background: rgba(120, 20, 20, 0.18);
+}
+
+#read-aloud-button.speaking:hover {
+    background: rgba(180, 30, 30, 0.25);
+    box-shadow: 0 0 12px rgba(255, 60, 60, 0.2);
+}
+
+/* AUTO READ ENABLED */
+#auto-read-toggle.active {
+    border-color: #36b9e8;
+    color: #ffffff;
+    background: rgba(0, 130, 190, 0.2);
 }

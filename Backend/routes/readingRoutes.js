@@ -43,13 +43,13 @@ router.post("/", (req, res) => {
         );
 
         // Evaluate the new reading for persistent anomalies
-const alertId = evaluateReading(crew_id, metric);
+        const alertId = evaluateReading(crew_id, metric);
 
-      res.status(201).json({
-    message: "Sensor reading saved successfully.",
-    reading_id: result.lastInsertRowid,
-    alert_id: alertId
-});
+        res.status(201).json({
+            message: "Sensor reading saved successfully.",
+            reading_id: result.lastInsertRowid,
+            alert_id: alertId
+        });
 
     } catch (error) {
 

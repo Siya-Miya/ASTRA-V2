@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -127,35 +126,36 @@
 
                         <div class="astra-question-box">
 
-                            <textarea
-                                id="knowledge-question"
-                                rows="3"
-                                placeholder="Ask ASTRA a question..."
-                                required
-                            ></textarea>
+                            <textarea id="knowledge-question" rows="3" placeholder="Ask ASTRA a question..."
+                                required></textarea>
 
-                            <button
-                                type="button"
-                                id="voice-input-button"
-                                title="Speak to ASTRA"
-                                aria-label="Speak to ASTRA"
-                            >
+                            <button type="button" id="voice-input-button" title="Speak to ASTRA"
+                                aria-label="Speak to ASTRA">
                                 🎙
                             </button>
 
                         </div>
 
-                        <button
-                            type="submit"
-                            class="submit-report"
-                            id="knowledge-submit"
-                        >
+                        <button type="submit" class="submit-report" id="knowledge-submit">
                             ASK ASTRA
                         </button>
 
                     </form>
 
                     <div id="knowledge-result" aria-live="polite"></div>
+
+                    <div class="astra-speech-controls">
+
+                        <button type="button" id="read-aloud-button">
+                            READ ALOUD
+                        </button>
+
+                        <button type="button" id="auto-read-toggle" aria-pressed="false">
+                            AUTO READ ALOUD: OFF
+                        </button>
+
+                    </div>
+
 
                 </section>
 
@@ -429,13 +429,8 @@
                                 BODY REGION
                             </label>
 
-                            <input
-                                type="text"
-                                id="symptom-region"
-                                placeholder="Select a region from the body model"
-                                readonly
-                                required
-                            >
+                            <input type="text" id="symptom-region" placeholder="Select a region from the body model"
+                                readonly required>
                         </div>
 
                         <div class="form-group">
@@ -443,12 +438,8 @@
                                 WHAT ARE YOU EXPERIENCING?
                             </label>
 
-                            <input
-                                type="text"
-                                id="symptom-description"
-                                placeholder="e.g. Headache, dizziness, discomfort"
-                                required
-                            >
+                            <input type="text" id="symptom-description"
+                                placeholder="e.g. Headache, dizziness, discomfort" required>
                         </div>
 
                         <div class="form-row">
@@ -487,11 +478,8 @@
                                 ADDITIONAL DETAILS
                             </label>
 
-                            <textarea
-                                id="symptom-notes"
-                                rows="3"
-                                placeholder="Describe what happened, how it feels, or anything else relevant..."
-                            ></textarea>
+                            <textarea id="symptom-notes" rows="3"
+                                placeholder="Describe what happened, how it feels, or anything else relevant..."></textarea>
                         </div>
 
                         <button type="submit" class="submit-report">
@@ -655,4 +643,5 @@
     </div>
 
 </body>
+
 </html>

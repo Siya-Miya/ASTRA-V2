@@ -103,7 +103,6 @@ ON health_reports(crew_id, reported_at);
 CREATE INDEX IF NOT EXISTS idx_alerts_report_id
 ON alerts(report_id);
 
-
 -- =========================================
 -- INITIAL CREW DATA
 -- =========================================

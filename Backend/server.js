@@ -39,6 +39,8 @@ app.use("/api/health-reports", healthReportRoutes);
 
 app.use("/api/health-events", healthEventRoutes);
 
+const voiceRoutes = require("./routes/voiceRoutes");
+
 
 app.get("/", (req, res) => {
     res.send("ASTRA V2 API is running!");
@@ -47,3 +49,5 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
     console.log(`ASTRA V2 server running on port ${PORT}`);
 });
+
+app.use("/api/voice", voiceRoutes);
