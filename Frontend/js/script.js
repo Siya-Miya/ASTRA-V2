@@ -668,26 +668,106 @@ async function loadAlerts() {
 }
 
 
+
 // =====================================
 // SYMPTOM REPORT FORM
 // =====================================
 
 document.getElementById("symptom-form").addEventListener(
     "submit",
-    event => {
+    async event => {
 
         event.preventDefault();
 
-        const message =
-            document.getElementById("report-message");
+        const message = document.getElementById("report-message");
+
+        const submitButton = event.target.querySelector(
+            'button[type="submit"]'
+        );
+
+        // Collect the report details.
+        const report = {
+            crew_id: astronautId,
+
+            body_region:
+                document.getElementById("symptom-region").value,
+
+            description:
+                document.getElementById("symptom-description").value.trim(),
+
+            severity:
+                document.getElementById("symptom-severity").value,
+
+            onset:
+                document.getElementById("symptom-onset").value,
+
+            notes:
+                document.getElementById("symptom-notes").value.trim()
+        };
+
+        if (!report.description) {
+
+            message.textContent = "Please describe the symptom.";
+            return;
+
+        }
 
         message.className = "form-message";
+        message.textContent = "Submitting report to ASTRA...";
 
-        message.textContent =
-            "The reporting interface is ready. We still need to connect it to the health-report API.";
+        submitButton.disabled = true;
+
+        try {
+
+            const response = await fetch(
+                `${API_URL}/health-reports`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(report)
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(
+                    result.message || "Could not submit report."
+                );
+            }
+
+            const astraResponse = result.data.astra_response;
+
+            message.textContent = astraResponse?.found
+                ? `Report saved successfully. ASTRA found relevant research: ${astraResponse.topic.title}.`
+                : "Report saved successfully. ASTRA could not find matching research in its current knowledge base.";
+
+            // Clear the form after successful submission.
+            event.target.reset();
+
+            console.log("Saved health report:", result.data.report);
+            console.log("ASTRA response:", astraResponse);
+
+        } catch (error) {
+
+            console.error("Health report submission error:", error);
+
+            message.textContent =
+                "ASTRA could not submit the report. Check the backend connection.";
+
+        } finally {
+
+            submitButton.disabled = false;
+
+        }
 
     }
 );
+
 
 
 // =====================================
