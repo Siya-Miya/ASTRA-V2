@@ -90,11 +90,75 @@
                     </a>
 
                     <a href="#knowledge-section" class="nav-item">
-    <span>06</span>
-    ASTRA Assist
-</a>
+                        <span>06</span>
+                        ASTRA Assist
+                    </a>
 
                 </nav>
+
+
+                <!-- OTHER CREW MEMBERS -->
+                <section class="crew-status-section">
+
+                    <p class="panel-label">OTHER CREW MEMBERS</p>
+
+                    <div id="crew-status-list">
+
+                        <p class="crew-loading">Loading crew status...</p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ASTRA ASSIST SIDEBAR -->
+                <section class="astra-sidebar" id="knowledge-section">
+
+                    <div class="astra-sidebar-heading">
+                        <p class="panel-label">ASTRA ASSIST</p>
+                        <span class="system-dot"></span>
+                    </div>
+
+                    <p class="astra-sidebar-description">
+                        OFFLINE CREW KNOWLEDGE SUPPORT
+                    </p>
+
+                    <form id="knowledge-form">
+
+                        <div class="astra-question-box">
+
+                            <textarea
+                                id="knowledge-question"
+                                rows="3"
+                                placeholder="Ask ASTRA a question..."
+                                required
+                            ></textarea>
+
+                            <button
+                                type="button"
+                                id="voice-input-button"
+                                title="Speak to ASTRA"
+                                aria-label="Speak to ASTRA"
+                            >
+                                🎙
+                            </button>
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="submit-report"
+                            id="knowledge-submit"
+                        >
+                            ASK ASTRA
+                        </button>
+
+                    </form>
+
+                    <div id="knowledge-result" aria-live="polite"></div>
+
+                </section>
+
 
                 <div class="left-panel-footer">
                     <p>CREW IDENTIFICATION</p>
@@ -124,67 +188,170 @@
                 </div>
 
 
-<!-- DASHBOARD OVERVIEW -->
-<section class="dashboard-overview">
+                <!-- DASHBOARD OVERVIEW -->
+                <section class="dashboard-overview">
 
-    <div class="overview-heading">
-        <div>
-            <p class="eyebrow">MISSION HEALTH OVERVIEW</p>
-            <h3>Health at a glance</h3>
-        </div>
+                    <div class="overview-heading">
+                        <div>
+                            <p class="eyebrow">MISSION HEALTH OVERVIEW</p>
+                            <h3>Health at a glance</h3>
+                        </div>
 
-        <span class="overview-label">PERSONAL MONITORING</span>
-    </div>
+                        <span class="overview-label">SIMULATED SENSOR DATA</span>
+                    </div>
 
-    <div class="overview-grid">
+                    <div class="reading-group">
+                        <h4>CREW PHYSIOLOGY</h4>
 
-        <div class="overview-card">
-            <div class="overview-card-top">
-                <span>HEART RATE</span>
-                <span class="overview-icon red">♥</span>
-            </div>
+                        <div class="overview-grid">
 
-            <div class="overview-reading">
-                <strong id="overview-heart-rate">--</strong>
-                <span>bpm</span>
-            </div>
+                            <div class="overview-card">
+                                <div class="overview-card-top">
+                                    <span>HEART RATE</span>
+                                    <span class="overview-icon red">♥</span>
+                                </div>
+                                <div class="overview-reading">
+                                    <strong id="overview-heart-rate">--</strong>
+                                    <span>bpm</span>
+                                </div>
+                                <small>Cardiovascular</small>
+                            </div>
 
-            <small>Latest recorded measurement</small>
-        </div>
+                            <div class="overview-card">
+                                <div class="overview-card-top">
+                                    <span>OXYGEN SATURATION</span>
+                                    <span class="overview-icon blue">◈</span>
+                                </div>
+                                <div class="overview-reading">
+                                    <strong id="overview-oxygen">--</strong>
+                                    <span>%</span>
+                                </div>
+                                <small>Blood oxygen</small>
+                            </div>
 
-        <div class="overview-card">
-            <div class="overview-card-top">
-                <span>OXYGEN SATURATION</span>
-                <span class="overview-icon blue">◈</span>
-            </div>
+                            <div class="overview-card">
+                                <div class="overview-card-top">
+                                    <span>BODY TEMPERATURE</span>
+                                    <span class="overview-icon amber">◉</span>
+                                </div>
+                                <div class="overview-reading">
+                                    <strong id="overview-temperature">--</strong>
+                                    <span>°C</span>
+                                </div>
+                                <small>Body measurement</small>
+                            </div>
 
-            <div class="overview-reading">
-                <strong id="overview-oxygen">--</strong>
-                <span>%</span>
-            </div>
+                            <div class="overview-card">
+                                <div class="overview-card-top">
+                                    <span>BREATHING RATE</span>
+                                    <span class="overview-icon blue">≈</span>
+                                </div>
+                                <div class="overview-reading">
+                                    <strong id="overview-respiratory">--</strong>
+                                    <span>/min</span>
+                                </div>
+                                <small>Breaths per minute</small>
+                            </div>
 
-            <small>Latest recorded measurement</small>
-        </div>
+                        </div>
+                    </div>
 
-        <div class="overview-card">
-            <div class="overview-card-top">
-                <span>BODY TEMPERATURE</span>
-                <span class="overview-icon amber">◉</span>
-            </div>
+                    <div class="reading-group">
+                        <h4>SPACECRAFT ENVIRONMENT</h4>
 
-            <div class="overview-reading">
-                <strong id="overview-temperature">--</strong>
-                <span>°C</span>
-            </div>
+                        <div class="overview-grid">
 
-            <small>Latest recorded measurement</small>
-        </div>
+                            <div class="overview-card">
+                                <div class="overview-card-top">
+                                    <span>CABIN TEMPERATURE</span>
+                                    <span class="overview-icon amber">◉</span>
+                                </div>
+                                <div class="overview-reading">
+                                    <strong id="overview-cabin-temperature">--</strong>
+                                    <span>°C</span>
+                                </div>
+                                <small>Cabin conditions</small>
+                            </div>
 
-    </div>
+                            <div class="overview-card">
+                                <div class="overview-card-top">
+                                    <span>CABIN PRESSURE</span>
+                                    <span class="overview-icon blue">◉</span>
+                                </div>
+                                <div class="overview-reading">
+                                    <strong id="overview-cabin-pressure">--</strong>
+                                    <span>kPa</span>
+                                </div>
+                                <small>Atmospheric pressure</small>
+                            </div>
 
-</section>
+                            <div class="overview-card">
+                                <div class="overview-card-top">
+                                    <span>CABIN OXYGEN</span>
+                                    <span class="overview-icon blue">◈</span>
+                                </div>
+                                <div class="overview-reading">
+                                    <strong id="overview-cabin-oxygen">--</strong>
+                                    <span>%</span>
+                                </div>
+                                <small>Oxygen concentration</small>
+                            </div>
+
+                            <div class="overview-card">
+                                <div class="overview-card-top">
+                                    <span>CARBON DIOXIDE</span>
+                                    <span class="overview-icon amber">◈</span>
+                                </div>
+                                <div class="overview-reading">
+                                    <strong id="overview-carbon-dioxide">--</strong>
+                                    <span>%</span>
+                                </div>
+                                <small>CO₂ concentration</small>
+                            </div>
+
+                            <div class="overview-card">
+                                <div class="overview-card-top">
+                                    <span>HUMIDITY</span>
+                                    <span class="overview-icon blue">◉</span>
+                                </div>
+                                <div class="overview-reading">
+                                    <strong id="overview-humidity">--</strong>
+                                    <span>%</span>
+                                </div>
+                                <small>Cabin moisture</small>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="reading-group">
+                        <h4>RADIATION MONITORING</h4>
+
+                        <div class="overview-grid">
+
+                            <div class="overview-card radiation-card">
+                                <div class="overview-card-top">
+                                    <span>RADIATION DOSE RATE</span>
+                                    <span class="overview-icon amber">⌁</span>
+                                </div>
+                                <div class="overview-reading">
+                                    <strong id="overview-radiation">--</strong>
+                                    <span>µSv/h</span>
+                                </div>
+                                <small>Simulated exposure rate</small>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <p class="sensor-data-note">
+                        All displayed readings are simulated for demonstration purposes.
+                    </p>
+
+                </section>
 
 
+                <!-- 3D BODY MODEL -->
                 <section class="body-card" id="body-section">
 
                     <div class="body-card-header">
@@ -197,7 +364,6 @@
                             INITIALISING 3D MODEL
                         </span>
                     </div>
-
 
                     <!-- THREE.JS VIEWER -->
                     <div class="body-viewer">
@@ -225,7 +391,6 @@
                         </div>
 
                     </div>
-
 
                     <div class="body-card-footer">
                         <div>
@@ -339,50 +504,6 @@
 
                 </section>
 
-
-<!-- ASTRA ASSIST -->
-<section class="report-card" id="knowledge-section">
-
-    <div class="section-heading">
-        <div>
-            <p class="eyebrow">KNOWLEDGE SUPPORT SYSTEM</p>
-            <h3>ASTRA Assist</h3>
-        </div>
-
-        <span class="model-status">RESEARCH DATABASE</span>
-    </div>
-
-    <p class="section-description">
-        Ask a health-related question and explore information
-        from ASTRA's research knowledge base.
-    </p>
-
-    <form id="knowledge-form">
-
-        <div class="form-group">
-            <label for="knowledge-question">
-                YOUR QUESTION
-            </label>
-
-            <textarea
-                id="knowledge-question"
-                rows="3"
-                placeholder="e.g. How does poor sleep affect astronauts?"
-                required
-            ></textarea>
-        </div>
-
-        <button type="submit" class="submit-report" id="knowledge-submit">
-            ASK ASTRA
-        </button>
-
-    </form>
-
-    <div id="knowledge-result" aria-live="polite"></div>
-
-</section>
-
-
             </section>
 
 
@@ -448,6 +569,18 @@
                         </div>
                     </div>
 
+                    <div class="vital-item">
+                        <div>
+                            <p>BREATHING RATE</p>
+                            <small>Respiratory</small>
+                        </div>
+
+                        <div class="vital-value">
+                            <strong id="respiratory-rate">--</strong>
+                            <span>/min</span>
+                        </div>
+                    </div>
+
                     <p class="last-updated">
                         LAST UPDATE
                         <span id="last-updated">Waiting...</span>
@@ -456,16 +589,41 @@
                 </section>
 
 
+                <!-- MEDICAL HISTORY -->
                 <section class="alerts-section" id="history-section">
 
                     <div class="section-heading">
-                        <p class="panel-label">HEALTH NOTIFICATIONS</p>
-                        <span id="alert-count">0</span>
+                        <div>
+                            <p class="panel-label">CREW MEDICAL RECORD</p>
+                            <h3>Medical History</h3>
+                        </div>
+                        <span id="history-count">0</span>
                     </div>
 
-                    <div id="alerts-container">
+                    <div class="history-filters">
+
+                        <select id="history-region-filter">
+                            <option value="all">All body regions</option>
+                            <option value="Head">Head</option>
+                            <option value="Neck">Neck</option>
+                            <option value="Chest">Chest</option>
+                            <option value="Abdomen">Abdomen</option>
+                            <option value="Pelvis">Pelvis</option>
+                            <option value="Arms">Arms</option>
+                            <option value="Legs">Legs</option>
+                        </select>
+
+                        <select id="history-type-filter">
+                            <option value="all">All event types</option>
+                            <option value="symptom_report">Symptom reports</option>
+                            <option value="sensor_alert">Sensor alerts</option>
+                        </select>
+
+                    </div>
+
+                    <div id="history-container">
                         <p class="empty-state">
-                            No active notifications.
+                            No medical history available.
                         </p>
                     </div>
 

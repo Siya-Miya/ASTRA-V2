@@ -1,3 +1,4 @@
+
 // =========================================
 // ASTRA V2 — CENTRAL SENSOR SIMULATOR
 // =========================================
@@ -15,6 +16,8 @@ const crew = [
 
 // Simulated sensor baselines
 const sensorBaselines = {
+
+    // Crew physiology
     heart_rate: {
         value: 75,
         variation: 8,
@@ -31,7 +34,52 @@ const sensorBaselines = {
         value: 36.8,
         variation: 0.3,
         unit: "°C"
+    },
+
+    respiratory_rate: {
+        value: 16,
+        variation: 2,
+        unit: "breaths/min"
+    },
+
+    // Spacecraft environment
+    cabin_temperature: {
+        value: 22,
+        variation: 1,
+        unit: "°C"
+    },
+
+    cabin_pressure: {
+        value: 101.3,
+        variation: 0.5,
+        unit: "kPa"
+    },
+
+    cabin_oxygen: {
+        value: 21,
+        variation: 0.3,
+        unit: "%"
+    },
+
+    carbon_dioxide: {
+        value: 0.1,
+        variation: 0.02,
+        unit: "%"
+    },
+
+    humidity: {
+        value: 45,
+        variation: 3,
+        unit: "%"
+    },
+
+    // Radiation monitoring
+    radiation_dose_rate: {
+        value: 0.3,
+        variation: 0.05,
+        unit: "µSv/h"
     }
+
 };
 
 
@@ -42,7 +90,7 @@ function generateReading(baseline) {
         (Math.random() * 2 - 1) * baseline.variation;
 
     return Number(
-        (baseline.value + variation).toFixed(1)
+        (baseline.value + variation).toFixed(2)
     );
 
 }
@@ -97,7 +145,7 @@ async function sendReading(crewMember, metric, sensor) {
 // Send readings for every astronaut
 async function simulateSensors() {
 
-    console.log("\nGenerating simulated crew readings...\n");
+    console.log("\nGenerating simulated crew and environment readings...\n");
 
     for (const member of crew) {
 
@@ -109,7 +157,7 @@ async function simulateSensors() {
 
         }
 
-        console.log(`Readings generated for ${member.name}`);
+        console.log(`10 simulated readings generated for ${member.name}`);
 
     }
 
@@ -122,6 +170,7 @@ async function simulateSensors() {
 async function startSimulator() {
 
     console.log("ASTRA V2 Central Simulator started.");
+    console.log("Monitoring 10 simulated metrics for 5 crew members.");
 
     while (true) {
 

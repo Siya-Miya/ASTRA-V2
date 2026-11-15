@@ -1,4 +1,3 @@
-
 const fs = require("fs");
 const path = require("path");
 
@@ -41,5 +40,16 @@ ensureColumn(
     "astra_response_json",
     "TEXT"
 );
+
+ensureColumn(
+    "alerts",
+    "report_id",
+    "INTEGER REFERENCES health_reports(id)"
+);
+
+db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_alerts_report_id
+    ON alerts(report_id)
+`);
 
 console.log("ASTRA V2 database tables initialized!");

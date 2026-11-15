@@ -4,6 +4,7 @@ const db = require("./database/connection");
 const alertRoutes = require("./routes/alertRoutes");
 const knowledgeRoutes = require("./routes/knowledgeRoutes");
 const healthReportRoutes = require("./routes/healthReportRoutes");
+const healthEventRoutes = require("./routes/healthEventRoutes");
 
 require("./database/initDatabase");
 
@@ -35,6 +36,9 @@ app.use("/api/readings", readingRoutes);
 app.use("/api/alerts", alertRoutes);
 
 app.use("/api/health-reports", healthReportRoutes);
+
+app.use("/api/health-events", healthEventRoutes);
+
 
 app.get("/", (req, res) => {
     res.send("ASTRA V2 API is running!");

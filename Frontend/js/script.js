@@ -1,4 +1,3 @@
-
 import * as THREE from "three";
 
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
@@ -13,14 +12,12 @@ import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 const API_URL = "http://localhost:3000/api";
 
 const params = new URLSearchParams(window.location.search);
-
 const astronautId = Number(params.get("astronaut")) || 1;
 
-// Change to "female" to use the other available anatomy model.
 const bodyType = params.get("body") === "female" ? "female" : "male";
 
 const MODEL_URL =
-    `https://cdn.jsdelivr.net/npm/open-anatomy-3d@0.1.0/models/anatomy-${bodyType}.glb`;
+    `https://cdn.jsdelivr.net/npm/open-anatomy-3d@0.1.0/models/anatomy-${bodyType}.glb`;
 
 
 // =====================================
@@ -32,26 +29,23 @@ const canvas = document.getElementById("body-canvas");
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(
-    35,
-    1,
-    0.1,
-    100
+    35,
+    1,
+    0.1,
+    100
 );
 
 camera.position.set(0, 1.7, 5.5);
 
 const renderer = new THREE.WebGLRenderer({
-    canvas: canvas,
-    antialias: true,
-    alpha: true
+    canvas: canvas,
+    antialias: true,
+    alpha: true
 });
 
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
 renderer.outputColorSpace = THREE.SRGBColorSpace;
-
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-
 renderer.toneMappingExposure = 1.2;
 
 
@@ -60,42 +54,36 @@ renderer.toneMappingExposure = 1.2;
 // =====================================
 
 const ambientLight = new THREE.HemisphereLight(
-    0xdceeff,
-    0x15243a,
-    2.2
+    0xdceeff,
+    0x15243a,
+    2.2
 );
 
 scene.add(ambientLight);
 
-
 const mainLight = new THREE.DirectionalLight(
-    0xffffff,
-    3
+    0xffffff,
+    3
 );
 
 mainLight.position.set(3, 5, 5);
-
 scene.add(mainLight);
 
-
 const blueLight = new THREE.PointLight(
-    0x398bff,
-    25,
-    10
+    0x398bff,
+    25,
+    10
 );
 
 blueLight.position.set(-3, 2, 2);
-
 scene.add(blueLight);
 
-
 const backLight = new THREE.DirectionalLight(
-    0x55d6e8,
-    2
+    0x55d6e8,
+    2
 );
 
 backLight.position.set(0, 3, -4);
-
 scene.add(backLight);
 
 
@@ -106,144 +94,135 @@ scene.add(backLight);
 const controls = new OrbitControls(camera, canvas);
 
 controls.enableDamping = true;
-
 controls.dampingFactor = 0.06;
-
 controls.enablePan = false;
-
 controls.minDistance = 2.5;
-
 controls.maxDistance = 9;
-
 controls.target.set(0, 1.5, 0);
+
+
+// =====================================
+// MODEL AND HEALTH EVENT VARIABLES
+// =====================================
+
+let anatomicalModel = null;
+let modelBounds = null;
+let selectedRegionName = null;
+let healthEvents = [];
+
+const regionMarkers = new Map();
+
+const loader = new GLTFLoader();
+loader.setMeshoptDecoder(MeshoptDecoder);
 
 
 // =====================================
 // LOAD ANATOMICAL MODEL
 // =====================================
 
-let anatomicalModel = null;
-
-let modelBounds = null;
-
-let selectedObject = null;
-
-let originalMaterial = null;
-
-let selectedRegionName = null;
-
-const loader = new GLTFLoader();
-
-loader.setMeshoptDecoder(MeshoptDecoder);
-
-
 async function loadAnatomicalModel() {
 
-    const loadingScreen = document.getElementById("model-loading");
+    const loadingScreen = document.getElementById("model-loading");
+    const modelStatus = document.getElementById("model-status");
 
-    const modelStatus = document.getElementById("model-status");
+    try {
 
-    try {
+        modelStatus.textContent = "DOWNLOADING ANATOMY";
 
-        modelStatus.textContent = "DOWNLOADING ANATOMY";
+        const gltf = await loader.loadAsync(MODEL_URL);
 
-        const gltf = await loader.loadAsync(MODEL_URL);
+        anatomicalModel = gltf.scene;
+        scene.add(anatomicalModel);
 
-        anatomicalModel = gltf.scene;
+        // Calculate original model dimensions.
+        const initialBounds = new THREE.Box3().setFromObject(
+            anatomicalModel
+        );
 
-        // Add the model to the scene.
-        scene.add(anatomicalModel);
+        const size = initialBounds.getSize(new THREE.Vector3());
+        const center = initialBounds.getCenter(new THREE.Vector3());
 
-        // Find the model's dimensions.
-        const initialBounds = new THREE.Box3().setFromObject(
-            anatomicalModel
-        );
+        // Centre the model.
+        anatomicalModel.position.x = -center.x;
+        anatomicalModel.position.z = -center.z;
+        anatomicalModel.position.y = -initialBounds.min.y;
 
-        const size = initialBounds.getSize(new THREE.Vector3());
+        // Scale model.
+        const targetHeight = 3.2;
+        const scale = targetHeight / size.y;
 
-        const center = initialBounds.getCenter(new THREE.Vector3());
+        anatomicalModel.scale.setScalar(scale);
 
-        // Centre the model horizontally.
-        anatomicalModel.position.x = -center.x;
+        // Preserve translucent outer skin.
+        const skin = anatomicalModel.getObjectByName("skin");
 
-        anatomicalModel.position.z = -center.z;
+        if (skin) {
 
-        anatomicalModel.position.y = -initialBounds.min.y;
+            skin.traverse(object => {
 
-        // Scale the model to fit the viewer.
-        const targetHeight = 3.2;
+                if (!object.isMesh) return;
 
-        const scale = targetHeight / size.y;
+                object.material = object.material.clone();
+                object.material.transparent = true;
+                object.material.opacity = 0.14;
+                object.material.depthWrite = false;
 
-        anatomicalModel.scale.setScalar(scale);
+            });
 
-        // Make the outer skin translucent so internal anatomy
-        // can be explored.
-        const skin = anatomicalModel.getObjectByName("skin");
+        }
 
-        if (skin) {
+        console.log("Model traversal starting");
 
-            skin.traverse(object => {
+        anatomicalModel.traverse(object => {
 
-                if (!object.isMesh) return;
+            if (!object.isMesh) return;
 
-                object.material = object.material.clone();
+            object.frustumCulled = true;
 
-                object.material.transparent = true;
+        });
 
-                object.material.opacity = 0.14;
+        // Update model transformations before measuring anatomy.
+        anatomicalModel.updateMatrixWorld(true);
 
-                object.material.depthWrite = false;
+        modelBounds = new THREE.Box3().setFromObject(
+            anatomicalModel
+        );
 
-            });
+        // Create the seven anatomical overlays.
+        createAllRegionMarkers();
 
-        }
+        // Configure camera.
+        const modelCenter = modelBounds.getCenter(
+            new THREE.Vector3()
+        );
 
-        anatomicalModel.traverse(object => {
+        controls.target.copy(modelCenter);
 
-            if (!object.isMesh) return;
+        camera.position.set(
+            modelCenter.x,
+            modelCenter.y + 0.1,
+            modelCenter.z + 5.5
+        );
 
-            object.frustumCulled = true;
+        controls.update();
 
-        });
+        loadingScreen.classList.add("hidden");
+        modelStatus.textContent = "ANATOMY MODEL ONLINE";
 
-        modelBounds = new THREE.Box3().setFromObject(
-            anatomicalModel
-        );
+        console.log("ASTRA anatomical model loaded.");
 
-        // Set the camera target to the model's centre.
-        const modelCenter = modelBounds.getCenter(
-            new THREE.Vector3()
-        );
+    } catch (error) {
 
-        controls.target.copy(modelCenter);
+        console.error("Anatomical model loading error:", error);
 
-        camera.position.set(
-            modelCenter.x,
-            modelCenter.y + 0.1,
-            modelCenter.z + 5.5
-        );
+        modelStatus.textContent = "MODEL UNAVAILABLE";
 
-        controls.update();
+        loadingScreen.innerHTML = `
+            <p>Unable to load anatomical model.</p>
+            <p>Check your internet connection and refresh.</p>
+        `;
 
-        loadingScreen.classList.add("hidden");
-
-        modelStatus.textContent = "ANATOMY MODEL ONLINE";
-
-        console.log("ASTRA anatomical model loaded.");
-
-    } catch (error) {
-
-        console.error("Anatomical model loading error:", error);
-
-        modelStatus.textContent = "MODEL UNAVAILABLE";
-
-        loadingScreen.innerHTML = `
-            <p>Unable to load anatomical model.</p>
-            <p>Check your internet connection and refresh.</p>
-        `;
-
-    }
+    }
 
 }
 
@@ -254,22 +233,19 @@ async function loadAnatomicalModel() {
 
 function resizeViewer() {
 
-    const width = canvas.clientWidth;
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
 
-    const height = canvas.clientHeight;
+    if (!width || !height) return;
 
-    if (!width || !height) return;
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
 
-    camera.aspect = width / height;
-
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(width, height, false);
+    renderer.setSize(width, height, false);
 
 }
 
 const resizeObserver = new ResizeObserver(resizeViewer);
-
 resizeObserver.observe(canvas.parentElement);
 
 resizeViewer();
@@ -283,17 +259,14 @@ let autoRotate = false;
 
 function animate() {
 
-    requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
 
-    if (autoRotate && anatomicalModel) {
+    if (autoRotate && anatomicalModel) {
+        anatomicalModel.rotation.y += 0.003;
+    }
 
-        anatomicalModel.rotation.y += 0.003;
-
-    }
-
-    controls.update();
-
-    renderer.render(scene, camera);
+    controls.update();
+    renderer.render(scene, camera);
 
 }
 
@@ -301,109 +274,391 @@ animate();
 
 
 // =====================================
+// HEALTH EVENT VISUAL MARKERS
+// =====================================
+
+function getRegionStatus(region) {
+
+    const latestEvent = healthEvents
+        .filter(event =>
+            event.event_type === "symptom_report" &&
+            event.body_region?.toLowerCase() === region.toLowerCase()
+        )
+        .sort((a, b) =>
+            new Date(b.occurred_at) - new Date(a.occurred_at)
+        )[0];
+
+    if (!latestEvent) return "none";
+
+    const severity = String(latestEvent.severity || "").toLowerCase();
+
+    if (severity === "severe") return "critical";
+    if (severity === "moderate") return "warning";
+
+    return "recorded";
+}
+
+
+function getRegionColor(status) {
+
+    switch (status) {
+
+        case "critical":
+            return 0xff3030; // Red
+
+        case "warning":
+            return 0xffa500; // Amber
+
+        case "recorded":
+        case "none":
+        default:
+            return 0x398bff; // Blue
+
+    }
+}
+
+// =====================================
+// ANATOMICAL REGION MARKERS
+// =====================================
+
+function getMeshBounds(meshNames) {
+
+    const bounds = new THREE.Box3();
+    bounds.makeEmpty();
+
+    meshNames.forEach(name => {
+
+        const mesh = anatomicalModel.getObjectByName(name);
+
+        if (!mesh) {
+            console.warn("Anatomical mesh not found:", name);
+            return;
+        }
+
+        bounds.expandByObject(mesh);
+
+    });
+
+    return bounds;
+
+}
+
+
+function createRegionMarker(region, shapes) {
+
+    const markerGroup = new THREE.Group();
+
+    const material = new THREE.MeshBasicMaterial({
+    color: 0x398bff,
+    transparent: true,
+    opacity: 0.45,
+    depthTest: true,
+    depthWrite: false
+});
+
+    const worldScale = anatomicalModel.getWorldScale(
+        new THREE.Vector3()
+    );
+
+    shapes.forEach(shape => {
+
+        const bounds = getMeshBounds(shape.meshNames);
+
+        if (bounds.isEmpty()) return;
+
+        const center = bounds.getCenter(
+            new THREE.Vector3()
+        );
+
+        const size = bounds.getSize(
+            new THREE.Vector3()
+        );
+
+        // Convert world coordinates into model-local coordinates.
+        const localCenter = anatomicalModel.worldToLocal(
+            center.clone()
+        );
+
+        const localSize = size.divide(worldScale);
+
+        const geometry = new THREE.SphereGeometry(
+            1,
+            24,
+            16
+        );
+
+        const overlay = new THREE.Mesh(
+            geometry,
+            material
+        );
+        // Keep overlays visual only; clicks should reach the anatomy.
+        overlay.raycast = () => {};
+
+        overlay.scale.set(
+            localSize.x * shape.width * 0.5,
+            localSize.y * shape.height * 0.5,
+            localSize.z * shape.depth * 0.5
+        );
+
+        overlay.position.copy(localCenter);
+
+    
+
+        markerGroup.add(overlay);
+
+    });
+
+    markerGroup.userData.region = region;
+
+    anatomicalModel.add(markerGroup);
+
+    regionMarkers.set(region, markerGroup);
+
+}
+
+
+// Update colours when new health events arrive.
+function updateRegionMarkerColors() {
+
+    console.log("Updating ASTRA body markers");
+
+    regionMarkers.forEach((markerGroup, region) => {
+
+        const status = getRegionStatus(region);
+        const color = getRegionColor(status);
+
+        console.log(`${region}: ${status}`);
+
+        markerGroup.traverse(object => {
+
+            if (!object.isMesh) return;
+
+            object.material.color.setHex(color);
+            object.material.needsUpdate = true;
+
+        });
+
+    });
+
+}
+
+
+// Create all seven logical health regions.
+function createAllRegionMarkers() {
+
+    if (!anatomicalModel) return;
+
+    // HEAD
+    createRegionMarker("Head", [
+        {
+            meshNames: ["skull"],
+            width: 0.90,
+            height: 0.90,
+            depth: 0.90
+        }
+    ]);
+
+    // NECK
+    createRegionMarker("Neck", [
+        {
+            meshNames: [
+                "spine_cervical",
+                "neck_muscles_l",
+                "neck_muscles_r"
+            ],
+            width: 0.85,
+            height: 0.95,
+            depth: 0.90
+        }
+    ]);
+
+    // CHEST
+    createRegionMarker("Chest", [
+        {
+            meshNames: [
+                "sternum",
+                "ribs_l",
+                "ribs_r",
+                "chest_muscles_l",
+                "chest_muscles_r"
+            ],
+            width: 0.95,
+            height: 0.95,
+            depth: 0.95
+        }
+    ]);
+
+    // ABDOMEN
+    createRegionMarker("Abdomen", [
+        {
+            meshNames: ["abdominal_muscles"],
+            width: 0.90,
+            height: 0.95,
+            depth: 0.90
+        }
+    ]);
+
+    // PELVIS
+    createRegionMarker("Pelvis", [
+        {
+            meshNames: ["pelvis", "pelvic_floor"],
+            width: 0.95,
+            height: 0.90,
+            depth: 0.95
+        }
+    ]);
+
+    // ARMS
+    createRegionMarker("Arms", [
+        {
+            meshNames: [
+                "humerus_l",
+                "forearm_l",
+                "upper_arm_muscles_l",
+                "forearm_muscles_l"
+            ],
+            width: 0.85,
+            height: 1.00,
+            depth: 0.85
+        },
+        {
+            meshNames: [
+                "humerus_r",
+                "forearm_r",
+                "upper_arm_muscles_r",
+                "forearm_muscles_r"
+            ],
+            width: 0.85,
+            height: 1.00,
+            depth: 0.85
+        }
+    ]);
+
+    // LEGS
+    createRegionMarker("Legs", [
+        {
+            meshNames: [
+                "femur_l",
+                "lower_leg_l",
+                "calf_l"
+            ],
+            width: 0.85,
+            height: 1.00,
+            depth: 0.85
+        },
+        {
+            meshNames: [
+                "femur_r",
+                "lower_leg_r",
+                "calf_r"
+            ],
+            width: 0.85,
+            height: 1.00,
+            depth: 0.85
+        }
+    ]);
+
+}
+
+
+// =====================================
 // BODY REGION SELECTION
 // =====================================
 
 const raycaster = new THREE.Raycaster();
-
 const pointer = new THREE.Vector2();
 
 let pointerStartX = 0;
-
 let pointerStartY = 0;
 
 
 function identifyBodyRegion(point) {
 
-    if (!modelBounds) return "General";
+    if (!modelBounds) return "General";
 
-    const size = modelBounds.getSize(new THREE.Vector3());
+    const size = modelBounds.getSize(new THREE.Vector3());
+    const center = modelBounds.getCenter(new THREE.Vector3());
 
-    const center = modelBounds.getCenter(new THREE.Vector3());
+    const normalizedY =
+        (point.y - modelBounds.min.y) / size.y;
 
-    const normalizedY = (point.y - modelBounds.min.y) / size.y;
+    const normalizedX =
+        Math.abs(point.x - center.x) / size.x;
 
-    const normalizedX = Math.abs(point.x - center.x) / size.x;
+    if (normalizedX > 0.27 && normalizedY > 0.2 && normalizedY < 0.82) {
+        return "Arms";
+    }
 
-    // Arms are identified by their horizontal position.
-    if (normalizedX > 0.27 && normalizedY > 0.2 && normalizedY < 0.82) {
-        return "Arms";
-    }
+    if (normalizedY > 0.84) return "Head";
+    if (normalizedY > 0.76) return "Neck";
+    if (normalizedY > 0.53) return "Chest";
+    if (normalizedY > 0.38) return "Abdomen";
+    if (normalizedY > 0.25) return "Pelvis";
 
-    if (normalizedY > 0.84) return "Head";
-
-    if (normalizedY > 0.76) return "Neck";
-
-    if (normalizedY > 0.53) return "Chest";
-
-    if (normalizedY > 0.38) return "Abdomen";
-
-    if (normalizedY > 0.25) return "Pelvis";
-
-    return "Legs";
+    return "Legs";
 
 }
 
 
 function selectBodyRegion(region) {
 
-    selectedRegionName = region;
+    selectedRegionName = region;
 
-    document.getElementById("selected-region").textContent =
-        `${region} selected`;
+    const regionEvents = healthEvents.filter(event =>
+        event.body_region?.toLowerCase() === region.toLowerCase()
+    );
 
-    document.getElementById("symptom-region").value =
-        region;
+    document.getElementById("selected-region").textContent =
+        `${region} selected (${regionEvents.length} recorded events)`;
 
-    document.getElementById("report-region-button").disabled =
-        false;
+    document.getElementById("symptom-region").value = region;
+
+    document.getElementById("report-region-button").disabled = false;
+
+    console.log(`Health events for ${region}:`, regionEvents);
 
 }
 
 
 canvas.addEventListener("pointerdown", event => {
 
-    pointerStartX = event.clientX;
-
-    pointerStartY = event.clientY;
+    pointerStartX = event.clientX;
+    pointerStartY = event.clientY;
 
 });
 
 
 canvas.addEventListener("pointerup", event => {
 
-    // Ignore movements because they are camera rotation.
-    const movement = Math.hypot(
-        event.clientX - pointerStartX,
-        event.clientY - pointerStartY
-    );
+    const movement = Math.hypot(
+        event.clientX - pointerStartX,
+        event.clientY - pointerStartY
+    );
 
-    if (movement > 5 || !anatomicalModel) return;
+    if (movement > 5 || !anatomicalModel) return;
 
-    const rect = canvas.getBoundingClientRect();
+    const rect = canvas.getBoundingClientRect();
 
-    pointer.x = (
-        (event.clientX - rect.left) / rect.width
-    ) * 2 - 1;
+    pointer.x =
+        ((event.clientX - rect.left) / rect.width) * 2 - 1;
 
-    pointer.y = -(
-        (event.clientY - rect.top) / rect.height
-    ) * 2 + 1;
+    pointer.y =
+        -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-    raycaster.setFromCamera(pointer, camera);
+    raycaster.setFromCamera(pointer, camera);
 
-    const intersections = raycaster.intersectObject(
-        anatomicalModel,
-        true
-    );
+    const intersections = raycaster.intersectObject(
+        anatomicalModel,
+        true
+    );
 
-    if (intersections.length === 0) return;
+    if (intersections.length === 0) return;
 
-    const region = identifyBodyRegion(
-        intersections[0].point
-    );
+    const region = identifyBodyRegion(
+        intersections[0].point
+    );
 
-    selectBodyRegion(region);
+    selectBodyRegion(region);
 
 });
 
@@ -413,60 +668,59 @@ canvas.addEventListener("pointerup", event => {
 // =====================================
 
 document.getElementById("rotate-button").addEventListener(
-    "click",
-    () => {
+    "click",
+    () => {
 
-        autoRotate = !autoRotate;
+        autoRotate = !autoRotate;
 
-        document.getElementById("rotate-button").textContent =
-            autoRotate ? "STOP ROTATION" : "ROTATE";
+        document.getElementById("rotate-button").textContent =
+            autoRotate ? "STOP ROTATION" : "ROTATE";
 
-    }
+    }
 );
 
 
 document.getElementById("reset-view-button").addEventListener(
-    "click",
-    () => {
+    "click",
+    () => {
 
-        if (!modelBounds) return;
+        if (!modelBounds) return;
 
-        anatomicalModel.rotation.set(0, 0, 0);
+        anatomicalModel.rotation.set(0, 0, 0);
 
-        autoRotate = false;
+        autoRotate = false;
 
-        document.getElementById("rotate-button").textContent =
-            "ROTATE";
+        document.getElementById("rotate-button").textContent =
+            "ROTATE";
 
-        const center = modelBounds.getCenter(
-            new THREE.Vector3()
-        );
+        const center = modelBounds.getCenter(
+            new THREE.Vector3()
+        );
 
-        camera.position.set(
-            center.x,
-            center.y + 0.1,
-            center.z + 5.5
-        );
+        camera.position.set(
+            center.x,
+            center.y + 0.1,
+            center.z + 5.5
+        );
 
-        controls.target.copy(center);
+        controls.target.copy(center);
+        controls.update();
 
-        controls.update();
-
-    }
+    }
 );
 
 
 document.getElementById("report-region-button").addEventListener(
-    "click",
-    () => {
+    "click",
+    () => {
 
-        document.getElementById("report-section").scrollIntoView({
-            behavior: "smooth"
-        });
+        document.getElementById("report-section").scrollIntoView({
+            behavior: "smooth"
+        });
 
-        document.getElementById("symptom-description").focus();
+        document.getElementById("symptom-description").focus();
 
-    }
+    }
 );
 
 
@@ -476,38 +730,38 @@ document.getElementById("report-region-button").addEventListener(
 
 async function loadCrew() {
 
-    try {
+    try {
 
-        const response = await fetch(`${API_URL}/crew`);
+        const response = await fetch(`${API_URL}/crew`);
 
-        if (!response.ok) {
-            throw new Error("Could not retrieve crew.");
-        }
+        if (!response.ok) {
+            throw new Error("Could not retrieve crew.");
+        }
 
-        const crew = await response.json();
+        const crew = await response.json();
 
-        const astronaut = crew.find(
-            member => member.id === astronautId
-        );
+        const astronaut = crew.find(
+            member => member.id === astronautId
+        );
 
-        if (!astronaut) {
-            throw new Error("Astronaut not found.");
-        }
+        if (!astronaut) {
+            throw new Error("Astronaut not found.");
+        }
 
-        document.getElementById("astronaut-name").textContent =
-            astronaut.name;
+        document.getElementById("astronaut-name").textContent =
+            astronaut.name;
 
-        document.getElementById("crew-code").textContent =
-            astronaut.crew_code;
+        document.getElementById("crew-code").textContent =
+            astronaut.crew_code;
 
-        document.getElementById("astronaut-role").textContent =
-            astronaut.role;
+        document.getElementById("astronaut-role").textContent =
+            astronaut.role;
 
-    } catch (error) {
+    } catch (error) {
 
-        console.error("Crew loading error:", error);
+        console.error("Crew loading error:", error);
 
-    }
+    }
 
 }
 
@@ -516,157 +770,471 @@ async function loadCrew() {
 // LOAD VITAL READINGS
 // =====================================
 
+
+// =====================================
+// LOAD VITAL READINGS
+// =====================================
+
 async function loadReadings() {
 
-    try {
+    try {
 
-        const response = await fetch(
-            `${API_URL}/readings?crew_id=${astronautId}`
-        );
+        const response = await fetch(
+            `${API_URL}/readings?crew_id=${astronautId}`
+        );
 
-        if (!response.ok) {
-            throw new Error("Could not retrieve readings.");
-        }
+        if (!response.ok) {
+            throw new Error("Could not retrieve readings.");
+        }
 
-        const readings = await response.json();
+        const readings = await response.json();
 
-        if (readings.length === 0) return;
+        if (!Array.isArray(readings) || readings.length === 0) {
+            return;
+        }
 
-        const latest = {};
+        // Find the newest reading for every metric.
+        const latest = {};
 
-        readings.forEach(reading => {
+        readings.forEach(reading => {
 
-            if (!latest[reading.metric]) {
-                latest[reading.metric] = reading;
-            }
+            const recordedAt = String(
+                reading.recorded_at || ""
+            );
 
-        });
+            const current = latest[reading.metric];
 
-        if (latest.heart_rate) {
+            if (!current) {
+                latest[reading.metric] = reading;
+                return;
+            }
 
-            document.getElementById("heart-rate").textContent =
-                Number(latest.heart_rate.value).toFixed(1);
+            const currentTime = new Date(
+                String(current.recorded_at).replace(" ", "T") + "Z"
+            ).getTime();
 
-        }
+            const newTime = new Date(
+                recordedAt.replace(" ", "T") + "Z"
+            ).getTime();
 
-        if (latest.oxygen_saturation) {
+            if (newTime >= currentTime) {
+                latest[reading.metric] = reading;
+            }
 
-            document.getElementById("oxygen").textContent =
-                Number(latest.oxygen_saturation.value).toFixed(1);
+        });
 
-        }
 
-        if (latest.body_temperature) {
+        // Metric-to-dashboard element mapping.
+        const metricDisplays = {
 
-            document.getElementById("temperature").textContent =
-                Number(latest.body_temperature.value).toFixed(1);
+            heart_rate: [
+                "heart-rate",
+                "overview-heart-rate"
+            ],
 
-        }
+            oxygen_saturation: [
+                "oxygen",
+                "overview-oxygen"
+            ],
 
-        const timestamps = Object.values(latest).map(reading =>
-            new Date(
-                reading.recorded_at.replace(" ", "T") + "Z"
-            ).getTime()
-        );
+            body_temperature: [
+                "temperature",
+                "overview-temperature"
+            ],
 
-        document.getElementById("last-updated").textContent =
-            new Date(Math.max(...timestamps)).toLocaleTimeString();
+            respiratory_rate: [
+                "respiratory-rate",
+                "overview-respiratory"
+            ],
 
-        document.getElementById("sensor-status").textContent =
-            "RECEIVING SENSOR DATA";
+            cabin_temperature: [
+                "overview-cabin-temperature"
+            ],
 
-        document.getElementById("health-status").textContent =
-            "DATA AVAILABLE";
+            cabin_pressure: [
+                "overview-cabin-pressure"
+            ],
 
-    } catch (error) {
+            cabin_oxygen: [
+                "overview-cabin-oxygen"
+            ],
 
-        console.error("Reading loading error:", error);
+            carbon_dioxide: [
+                "overview-carbon-dioxide"
+            ],
 
-        document.getElementById("sensor-status").textContent =
-            "CONNECTION ERROR";
+            humidity: [
+                "overview-humidity"
+            ],
 
-    }
+            radiation_dose_rate: [
+                "overview-radiation"
+            ]
+
+        };
+
+
+        // Update every available dashboard reading.
+        Object.entries(metricDisplays).forEach(([metric, elementIds]) => {
+
+            const reading = latest[metric];
+
+            if (!reading) return;
+
+            const value = Number(reading.value);
+
+            if (!Number.isFinite(value)) return;
+
+            elementIds.forEach(elementId => {
+
+                const element = document.getElementById(elementId);
+
+                if (element) {
+                    element.textContent = value.toFixed(1);
+                }
+
+            });
+
+        });
+
+
+        // Find the latest timestamp across all metrics.
+        const timestamps = Object.values(latest).map(reading => {
+
+            const recordedAt = String(reading.recorded_at || "");
+
+            return new Date(
+                recordedAt.replace(" ", "T") + "Z"
+            ).getTime();
+
+        }).filter(Number.isFinite);
+
+
+        if (timestamps.length > 0) {
+
+            document.getElementById("last-updated").textContent =
+                new Date(Math.max(...timestamps)).toLocaleTimeString();
+
+        }
+
+
+        document.getElementById("sensor-status").textContent =
+            "RECEIVING SIMULATED DATA";
+
+        document.getElementById("health-status").textContent =
+            "DATA AVAILABLE";
+
+
+    } catch (error) {
+
+        console.error("Reading loading error:", error);
+
+        document.getElementById("sensor-status").textContent =
+            "CONNECTION ERROR";
+
+    }
+
+}
+
+
+
+// =====================================
+// LOAD HEALTH EVENTS
+// =====================================
+
+async function loadHealthEvents() {
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/health-events?crew_id=${astronautId}`
+        );
+
+        if (!response.ok) {
+            throw new Error("Could not retrieve health events.");
+        }
+
+        const result = await response.json();
+
+        healthEvents = result.data || [];
+
+        filterMedicalHistory();
+        updateRegionMarkerColors();
+
+        console.log("ASTRA health events:", healthEvents);
+
+    } catch (error) {
+
+        console.error("Health event loading error:", error);
+
+    }
 
 }
 
 
 // =====================================
-// LOAD ALERTS
+// RENDER MEDICAL HISTORY
 // =====================================
 
-async function loadAlerts() {
 
-    try {
+function renderMedicalHistory(events) {
 
-        const response = await fetch(`${API_URL}/alerts`);
+    const container = document.getElementById("history-container");
+    const count = document.getElementById("history-count");
 
-        if (!response.ok) {
-            throw new Error("Could not retrieve alerts.");
-        }
+// Remember which reports are currently expanded.
+const openEventKeys = new Set(
+    Array.from(container.querySelectorAll(".history-item[open]"))
+        .map(item => item.dataset.eventKey)
+);
 
-        const alerts = await response.json();
+container.innerHTML = "";    count.textContent = events.length;
 
-        const crewCode =
-            `ASTRA-${String(astronautId).padStart(3, "0")}`;
+    if (events.length === 0) {
+        container.innerHTML =
+            '<p class="empty-state">No medical history available.</p>';
+        return;
+    }
 
-        const activeAlerts = alerts.filter(alert =>
-            alert.crew_code === crewCode &&
-            alert.status !== "resolved"
-        );
+    events.forEach(event => {
 
-        document.getElementById("alert-count").textContent =
-            activeAlerts.length;
+        const item = document.createElement("details");
+        item.className = "history-item";
+        // Give each event a stable identity.
+const eventKey = event.id != null
+    ? `${event.event_type || ""}|${event.id}`
+    : `${event.event_type || ""}|${event.occurred_at || ""}|${event.title || ""}|${event.body_region || ""}`;
 
-        const container =
-            document.getElementById("alerts-container");
+item.dataset.eventKey = eventKey;
 
-        container.innerHTML = "";
+        // =====================================
+        // DATE FORMATTING
+        // =====================================
 
-        if (activeAlerts.length === 0) {
+        let date = "Time unavailable";
 
-            container.innerHTML =
-                '<p class="empty-state">No active notifications.</p>';
+        if (event.occurred_at) {
 
-            return;
+            const dateValue = String(event.occurred_at);
 
-        }
+            const normalizedDate = dateValue.includes("T")
+                ? dateValue
+                : dateValue.replace(" ", "T") + "Z";
 
-        activeAlerts.forEach(alert => {
+            const parsedDate = new Date(normalizedDate);
 
-            const item = document.createElement("div");
+            if (!Number.isNaN(parsedDate.getTime())) {
+                date = parsedDate.toLocaleString();
+            }
+        }
 
-            item.className = `alert-item ${alert.severity}`;
+        // =====================================
+        // EVENT HEADING
+        // =====================================
 
-            const heading = document.createElement("strong");
+        const heading = document.createElement("summary");
 
-            heading.textContent = alert.severity.toUpperCase();
+        const title = document.createElement("strong");
+        title.textContent = event.title || "Health event";
 
-            const message = document.createElement("p");
+        const metadata = document.createElement("small");
 
-            message.textContent = alert.message;
+        const eventType =
+            event.event_type === "symptom_report"
+                ? "SYMPTOM REPORT"
+                : "SENSOR ALERT";
 
-            const timestamp = document.createElement("small");
+        metadata.textContent =
+            `${eventType} | ${event.body_region || "General"}`;
 
-            timestamp.textContent = alert.triggered_at;
+        // Summary information: severity + date.
+        const summaryMeta = document.createElement("div");
+        summaryMeta.className = "history-summary-meta";
 
-            item.appendChild(heading);
+        const severityValue =
+            (event.severity || "unspecified").toLowerCase();
 
-            item.appendChild(message);
+        const summarySeverity = document.createElement("span");
+        summarySeverity.className =
+            `history-severity ${severityValue}`;
 
-            item.appendChild(timestamp);
+        summarySeverity.textContent =
+            event.severity || "Unspecified";
 
-            container.appendChild(item);
+        const summaryDate = document.createElement("small");
+        summaryDate.className = "history-summary-date";
+        summaryDate.textContent = date;
 
-        });
+        summaryMeta.appendChild(summarySeverity);
+        summaryMeta.appendChild(summaryDate);
 
-    } catch (error) {
+        heading.appendChild(title);
+        heading.appendChild(metadata);
+        heading.appendChild(summaryMeta);
 
-        console.error("Alert loading error:", error);
+        // =====================================
+        // EXPANDED EVENT DETAILS
+        // =====================================
 
-    }
+        const content = document.createElement("div");
+        content.className = "history-details";
+
+        const timestamp = document.createElement("p");
+        timestamp.textContent = `Recorded: ${date}`;
+
+        // Severity.
+        const severity = document.createElement("span");
+
+        severity.className =
+            `history-severity ${severityValue}`;
+
+        severity.textContent =
+            `Severity: ${event.severity || "Unspecified"}`;
+
+        // Status.
+        const statusValue =
+            (event.status || "unknown").toLowerCase();
+
+        const status = document.createElement("span");
+
+        status.className =
+            `history-status ${statusValue}`;
+
+        status.textContent =
+            `Status: ${event.status || "Unknown"}`;
+
+        
+content.appendChild(timestamp);
+content.appendChild(severity);
+content.appendChild(status);
+
+// Show resolution timestamp.
+if (event.resolved_at) {
+
+    const resolved = document.createElement("p");
+
+    resolved.textContent =
+        `Resolved: ${new Date(
+            event.resolved_at.replace(" ", "T") + "Z"
+        ).toLocaleString()}`;
+
+    content.appendChild(resolved);
 
 }
 
+        // =====================================
+        // ASTRA RESPONSE
+        // =====================================
+
+    
+if (event.astra_response_json) {
+
+    let parsedResponse;
+
+    try {
+
+        parsedResponse =
+            typeof event.astra_response_json === "string"
+                ? JSON.parse(event.astra_response_json)
+                : event.astra_response_json;
+
+    } catch (error) {
+
+        parsedResponse = {
+            message: String(event.astra_response_json)
+        };
+
+    }
+
+    const responsePanel = document.createElement("div");
+    responsePanel.className = "astra-response";
+
+    const responseHeading = document.createElement("strong");
+    responseHeading.textContent = "ASTRA ASSIST";
+
+    const responseStatus = document.createElement("span");
+
+    const found = parsedResponse.found === true;
+
+    responseStatus.className =
+        `astra-response-status ${found ? "found" : "not-found"}`;
+
+    responseStatus.textContent = found
+        ? "KNOWLEDGE MATCH FOUND"
+        : "NO RELEVANT KNOWLEDGE FOUND";
+
+    const responseMessage = document.createElement("p");
+    responseMessage.textContent =
+        parsedResponse.message || "No response message available.";
+
+    responsePanel.appendChild(responseHeading);
+    responsePanel.appendChild(responseStatus);
+    responsePanel.appendChild(responseMessage);
+
+    if (parsedResponse.recommendation) {
+
+        const recommendation = document.createElement("div");
+        recommendation.className = "astra-recommendation";
+
+        const recommendationHeading = document.createElement("strong");
+        recommendationHeading.textContent = "RECOMMENDATION";
+
+        const recommendationText = document.createElement("p");
+        recommendationText.textContent = parsedResponse.recommendation;
+
+        recommendation.appendChild(recommendationHeading);
+        recommendation.appendChild(recommendationText);
+
+        responsePanel.appendChild(recommendation);
+    }
+
+    content.appendChild(responsePanel);
+}
+
+
+        item.appendChild(heading);
+item.appendChild(content);
+
+// Restore its expanded state after refreshing.
+if (openEventKeys.has(eventKey)) {
+    item.open = true;
+}
+
+container.appendChild(item);
+
+    });
+
+}
+
+
+
+// =====================================
+// FILTER MEDICAL HISTORY
+// =====================================
+
+function filterMedicalHistory() {
+
+    const region =
+        document.getElementById("history-region-filter").value;
+
+    const type =
+        document.getElementById("history-type-filter").value;
+
+    const filteredEvents = healthEvents.filter(event => {
+
+        const matchesRegion =
+            region === "all" || event.body_region === region;
+
+        const matchesType =
+            type === "all" || event.event_type === type;
+
+        return matchesRegion && matchesType;
+
+    });
+
+    renderMedicalHistory(filteredEvents);
+
+}
 
 
 // =====================================
@@ -674,100 +1242,103 @@ async function loadAlerts() {
 // =====================================
 
 document.getElementById("symptom-form").addEventListener(
-    "submit",
-    async event => {
+    "submit",
+    async event => {
 
-        event.preventDefault();
+        event.preventDefault();
 
-        const message = document.getElementById("report-message");
+        const message = document.getElementById("report-message");
 
-        const submitButton = event.target.querySelector(
-            'button[type="submit"]'
-        );
+        const submitButton = event.target.querySelector(
+            'button[type="submit"]'
+        );
 
-        // Collect the report details.
-        const report = {
-            crew_id: astronautId,
+        const report = {
+            crew_id: astronautId,
 
-            body_region:
-                document.getElementById("symptom-region").value,
+            body_region:
+                document.getElementById("symptom-region").value,
 
-            description:
-                document.getElementById("symptom-description").value.trim(),
+            description:
+                document.getElementById("symptom-description").value.trim(),
 
-            severity:
-                document.getElementById("symptom-severity").value,
+            severity:
+                document.getElementById("symptom-severity").value,
 
-            onset:
-                document.getElementById("symptom-onset").value,
+            onset:
+                document.getElementById("symptom-onset").value,
 
-            notes:
-                document.getElementById("symptom-notes").value.trim()
-        };
+            notes:
+                document.getElementById("symptom-notes").value.trim()
+        };
 
-        if (!report.description) {
+        if (!report.description) {
 
-            message.textContent = "Please describe the symptom.";
-            return;
+            message.textContent = "Please describe the symptom.";
+            return;
 
-        }
+        }
 
-        message.className = "form-message";
-        message.textContent = "Submitting report to ASTRA...";
+        message.className = "form-message";
+        message.textContent = "Submitting report to ASTRA...";
 
-        submitButton.disabled = true;
+        submitButton.disabled = true;
 
-        try {
+        try {
 
-            const response = await fetch(
-                `${API_URL}/health-reports`,
-                {
-                    method: "POST",
+            const response = await fetch(
+                `${API_URL}/health-reports`,
+                {
+                    method: "POST",
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
 
-                    body: JSON.stringify(report)
-                }
-            );
+                    body: JSON.stringify(report)
+                }
+            );
 
-            const result = await response.json();
+            const result = await response.json();
 
-            if (!response.ok || !result.success) {
-                throw new Error(
-                    result.message || "Could not submit report."
-                );
-            }
+            if (!response.ok || !result.success) {
 
-            const astraResponse = result.data.astra_response;
+                throw new Error(
+                    result.message || "Could not submit report."
+                );
 
-            message.textContent = astraResponse?.found
-                ? `Report saved successfully. ASTRA found relevant research: ${astraResponse.topic.title}.`
-                : "Report saved successfully. ASTRA could not find matching research in its current knowledge base.";
+            }
 
-            // Clear the form after successful submission.
-            event.target.reset();
+            const astraResponse = result.data.astra_response;
 
-            console.log("Saved health report:", result.data.report);
-            console.log("ASTRA response:", astraResponse);
+            message.textContent = astraResponse?.found
+                ? `Report saved successfully. ASTRA found relevant research: ${astraResponse.topic.title}.`
+                : "Report saved successfully. ASTRA could not find matching research in its current knowledge base.";
 
-        } catch (error) {
+            // Clear the form after successful submission.
+            event.target.reset();
 
-            console.error("Health report submission error:", error);
+            // Immediately reload medical history.
+            await loadHealthEvents();
 
-            message.textContent =
-                "ASTRA could not submit the report. Check the backend connection.";
+            console.log("Saved health report:", result.data.report);
+            console.log("ASTRA response:", astraResponse);
 
-        } finally {
+        } catch (error) {
 
-            submitButton.disabled = false;
+            console.error("Health report submission error:", error);
 
-        }
+            message.textContent =
+                "ASTRA could not submit the report. Check the backend connection.";
 
-    }
+        } finally {
+
+            submitButton.disabled = false;
+
+        }
+
+    }
 );
-
 
 
 // =====================================
@@ -779,62 +1350,64 @@ const knowledgeQuestion = document.getElementById("knowledge-question");
 const knowledgeResult = document.getElementById("knowledge-result");
 const knowledgeSubmit = document.getElementById("knowledge-submit");
 
-
 if (knowledgeForm) {
 
-    knowledgeForm.addEventListener("submit", async (event) => {
+    knowledgeForm.addEventListener("submit", async event => {
 
-        event.preventDefault();
+        event.preventDefault();
 
-        const question = knowledgeQuestion.value.trim();
+        const question = knowledgeQuestion.value.trim();
 
-        if (!question) {
-            return;
-        }
+        if (!question) return;
 
-        knowledgeSubmit.disabled = true;
-        knowledgeSubmit.textContent = "SEARCHING...";
-        knowledgeResult.textContent = "Searching ASTRA's research database...";
+        knowledgeSubmit.disabled = true;
+        knowledgeSubmit.textContent = "SEARCHING...";
+        knowledgeResult.textContent =
+            "Searching ASTRA's research database...";
 
-        try {
+        try {
 
-            const response = await fetch(`${API_URL}/knowledge/ask`, {
+            const response = await fetch(`${API_URL}/knowledge/ask`, {
 
-                method: "POST",
+                method: "POST",
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: {
+                    "Content-Type": "application/json"
+                },
 
-                body: JSON.stringify({
-                    question: question
-                })
+                body: JSON.stringify({
+                    question: question
+                })
 
-            });
+            });
 
-            const result = await response.json();
+            const result = await response.json();
 
-            if (!response.ok || !result.success) {
-                throw new Error(result.message || "Could not process your question.");
-            }
+            if (!response.ok || !result.success) {
 
-            displayKnowledgeResult(result.data);
+                throw new Error(
+                    result.message || "Could not process your question."
+                );
 
-        } catch (error) {
+            }
 
-            console.error("ASTRA Assist error:", error);
+            displayKnowledgeResult(result.data);
 
-            knowledgeResult.textContent =
-                "ASTRA Assist could not connect to the knowledge service. Check that the backend is running.";
+        } catch (error) {
 
-        } finally {
+            console.error("ASTRA Assist error:", error);
 
-            knowledgeSubmit.disabled = false;
-            knowledgeSubmit.textContent = "ASK ASTRA";
+            knowledgeResult.textContent =
+                "ASTRA Assist could not connect to the knowledge service. Check that the backend is running.";
 
-        }
+        } finally {
 
-    });
+            knowledgeSubmit.disabled = false;
+            knowledgeSubmit.textContent = "ASK ASTRA";
+
+        }
+
+    });
 
 }
 
@@ -845,100 +1418,292 @@ if (knowledgeForm) {
 
 function displayKnowledgeResult(data) {
 
-    knowledgeResult.replaceChildren();
+    knowledgeResult.replaceChildren();
 
-    if (!data.found) {
+    if (!data.found) {
 
-        const message = document.createElement("p");
-        message.textContent = data.message;
+        const message = document.createElement("p");
+        message.textContent = data.message;
 
-        const recommendation = document.createElement("p");
-        recommendation.textContent = data.recommendation;
+        const recommendation = document.createElement("p");
+        recommendation.textContent = data.recommendation;
 
-        knowledgeResult.append(message, recommendation);
+        knowledgeResult.append(message, recommendation);
 
-        return;
-    }
+        return;
 
-    const title = document.createElement("h3");
-    title.textContent = data.topic.title;
+    }
 
-    knowledgeResult.appendChild(title);
+    const title = document.createElement("h3");
+    title.textContent = data.topic.title;
 
-    const sections = [
-        ["Explanation", data.answer.explanation],
-        ["Spaceflight Context", data.answer.spaceflightContext],
-        ["Warning Signs", data.answer.warningSigns],
-        ["Escalation Guidance", data.answer.escalationGuidance],
-        ["General Actions", data.answer.generalActions],
-        ["Measurement Notes", data.answer.measurementNotes]
-    ];
+    knowledgeResult.appendChild(title);
 
-    sections.forEach(([heading, content]) => {
+    const sections = [
+        ["Explanation", data.answer.explanation],
+        ["Spaceflight Context", data.answer.spaceflightContext],
+        ["Warning Signs", data.answer.warningSigns],
+        ["Escalation Guidance", data.answer.escalationGuidance],
+        ["General Actions", data.answer.generalActions],
+        ["Measurement Notes", data.answer.measurementNotes]
+    ];
 
-        if (!content || (Array.isArray(content) && content.length === 0)) {
-            return;
-        }
+    sections.forEach(([heading, content]) => {
 
-        const section = document.createElement("div");
+        if (!content || (Array.isArray(content) && content.length === 0)) {
+            return;
+        }
 
-        const sectionHeading = document.createElement("h4");
-        sectionHeading.textContent = heading;
+        const section = document.createElement("div");
 
-        section.appendChild(sectionHeading);
+        const sectionHeading = document.createElement("h4");
+        sectionHeading.textContent = heading;
 
-        if (Array.isArray(content)) {
+        section.appendChild(sectionHeading);
 
-            const list = document.createElement("ul");
+        if (Array.isArray(content)) {
 
-            content.forEach(item => {
+            const list = document.createElement("ul");
 
-                const listItem = document.createElement("li");
-                listItem.textContent = item;
+            content.forEach(item => {
 
-                list.appendChild(listItem);
+                const listItem = document.createElement("li");
+                listItem.textContent = item;
 
-            });
+                list.appendChild(listItem);
 
-            section.appendChild(list);
+            });
 
-        } else {
+            section.appendChild(list);
 
-            const paragraph = document.createElement("p");
-            paragraph.textContent = content;
+        } else {
 
-            section.appendChild(paragraph);
+            const paragraph = document.createElement("p");
+            paragraph.textContent = content;
 
-        }
+            section.appendChild(paragraph);
 
-        knowledgeResult.appendChild(section);
+        }
 
-    });
+        knowledgeResult.appendChild(section);
 
+    });
 
-    // SOURCE INFORMATION
+    // Source information.
+    const sourceHeading = document.createElement("h4");
+    sourceHeading.textContent = "Research Source";
 
-    const sourceHeading = document.createElement("h4");
-    sourceHeading.textContent = "Research Source";
+    const source = document.createElement("p");
 
-    const source = document.createElement("p");
+    source.textContent =
+        `${data.source.title} — ${data.source.organisation} (${data.source.date})`;
 
-    source.textContent =
-        `${data.source.title} — ${data.source.organisation} (${data.source.date})`;
+    knowledgeResult.append(sourceHeading, source);
 
-    knowledgeResult.append(sourceHeading, source);
+    // Disclaimer.
+    const disclaimer = document.createElement("p");
+    disclaimer.textContent = data.disclaimer;
 
-
-    // DISCLAIMER
-
-    const disclaimer = document.createElement("p");
-    disclaimer.textContent = data.disclaimer;
-
-    knowledgeResult.appendChild(disclaimer);
+    knowledgeResult.appendChild(disclaimer);
 
 }
 
+// =====================================
+// LOAD OTHER CREW MEMBERS' STATUSES
+// =====================================
 
+async function loadCrewStatuses() {
+
+    const container = document.getElementById("crew-status-list");
+
+    try {
+
+        // Retrieve all crew members.
+        const crewResponse = await fetch(`${API_URL}/crew`);
+
+        if (!crewResponse.ok) {
+            throw new Error("Could not retrieve crew members.");
+        }
+
+        const crew = await crewResponse.json();
+
+        // Retrieve current alerts.
+        const alertsResponse = await fetch(`${API_URL}/alerts`);
+
+        if (!alertsResponse.ok) {
+            throw new Error("Could not retrieve crew alerts.");
+        }
+
+        const alertsResult = await alertsResponse.json();
+
+        const alerts = Array.isArray(alertsResult)
+            ? alertsResult
+            : alertsResult.data || [];
+
+        // Exclude the astronaut using this personal station.
+        const otherCrew = crew.filter(
+            member => Number(member.id) !== astronautId
+        );
+
+        // Retrieve readings for each of the other crew members.
+        const crewStatuses = await Promise.all(
+
+            otherCrew.map(async member => {
+
+                const response = await fetch(
+                    `${API_URL}/readings?crew_id=${member.id}`
+                );
+
+                if (!response.ok) {
+                    throw new Error(
+                        `Could not retrieve readings for ${member.name}.`
+                    );
+                }
+
+                const readings = await response.json();
+
+                // Find the most recent reading.
+                const latestReading = Array.isArray(readings)
+                    ? readings.reduce((latest, reading) => {
+
+                        if (!latest) return reading;
+
+                        const latestTime = new Date(
+                            String(latest.recorded_at).replace(" ", "T") + "Z"
+                        ).getTime();
+
+                        const readingTime = new Date(
+                            String(reading.recorded_at).replace(" ", "T") + "Z"
+                        ).getTime();
+
+                        return readingTime > latestTime
+                            ? reading
+                            : latest;
+
+                    }, null)
+                    : null;
+
+                // Check for unresolved alerts belonging to this crew member.
+                const activeAlerts = alerts.filter(alert => {
+
+                    const belongsToCrew =
+                        Number(alert.crew_id) === Number(member.id);
+
+                    const status = String(
+                        alert.status || "active"
+                    ).toLowerCase();
+
+                    const unresolved =
+                        status !== "resolved" &&
+                        status !== "closed";
+
+                    return belongsToCrew && unresolved;
+
+                });
+
+                const hasCriticalAlert = activeAlerts.some(alert =>
+                    String(alert.severity || "").toLowerCase() === "critical"
+                );
+
+                const hasWarningAlert = activeAlerts.length > 0;
+
+                // Check whether the latest reading is still recent.
+                let hasSignal = false;
+
+                if (latestReading?.recorded_at) {
+
+                    const latestTime = new Date(
+                        String(latestReading.recorded_at).replace(" ", "T") + "Z"
+                    ).getTime();
+
+                    const age = Date.now() - latestTime;
+
+                    hasSignal =
+                        Number.isFinite(latestTime) &&
+                        age >= -5000 &&
+                        age <= 20000;
+
+                }
+
+                // Determine the crew member's overall status.
+                let status = "healthy";
+
+                if (hasCriticalAlert) {
+
+                    status = "critical";
+
+                } else if (!hasSignal) {
+
+                    status = "no-signal";
+
+                } else if (hasWarningAlert) {
+
+                    status = "warning";
+
+                }
+
+                return {
+                    id: member.id,
+                    name: member.name,
+                    crewCode: member.crew_code,
+                    status: status
+                };
+
+            })
+
+        );
+
+
+        // Render the crew members in the sidebar.
+        container.replaceChildren();
+
+        crewStatuses.forEach(member => {
+
+            const item = document.createElement("div");
+            item.className = `crew-member-item ${member.status}`;
+
+            const dot = document.createElement("span");
+            dot.className = "crew-status-dot";
+
+            const details = document.createElement("div");
+            details.className = "crew-member-details";
+
+            const name = document.createElement("strong");
+            name.textContent = member.name;
+
+            const code = document.createElement("small");
+            code.textContent = member.crewCode;
+
+            details.append(name, code);
+
+            const status = document.createElement("span");
+            status.className = "crew-member-status";
+
+            const statusLabels = {
+                healthy: "HEALTHY",
+                warning: "WARNING",
+                critical: "CRITICAL",
+                "no-signal": "NO SIGNAL"
+            };
+
+            status.textContent = statusLabels[member.status];
+
+            item.append(dot, details, status);
+
+            container.appendChild(item);
+
+        });
+
+    } catch (error) {
+
+        console.error("Crew status loading error:", error);
+
+        container.innerHTML =
+            '<p class="crew-loading">Unable to retrieve crew status.</p>';
+
+    }
+
+}
 
 // =====================================
 // REFRESH DASHBOARD
@@ -946,24 +1711,35 @@ function displayKnowledgeResult(data) {
 
 async function refreshDashboard() {
 
-    await Promise.all([
-        loadReadings(),
-        loadAlerts()
-    ]);
+    await Promise.all([
+        loadReadings(),
+        loadHealthEvents(),
+        loadCrewStatuses()
+    ]);
 
 }
 
 
+// =====================================
+// INITIALISE DASHBOARD
+// =====================================
+
 async function initialiseDashboard() {
 
-    await Promise.all([
-        loadAnatomicalModel(),
-        loadCrew()
-    ]);
+    await Promise.all([
+        loadAnatomicalModel(),
+        loadCrew()
+    ]);
 
-    await refreshDashboard();
+    await refreshDashboard();
 
-    setInterval(refreshDashboard, 5000);
+    setInterval(refreshDashboard, 5000);
+
+    document.getElementById("history-region-filter")
+        .addEventListener("change", filterMedicalHistory);
+
+    document.getElementById("history-type-filter")
+        .addEventListener("change", filterMedicalHistory);
 
 }
 

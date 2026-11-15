@@ -1116,3 +1116,795 @@ button {
         gap: 10px;
     }
 }
+
+/* =================================
+   MEDICAL HISTORY
+================================= */
+
+
+/* =========================================
+   ASTRA — MEDICAL HISTORY
+========================================= */
+
+.alerts-section {
+    min-width: 0;
+}
+
+#history-section .section-heading {
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#history-section .section-heading h3 {
+    margin-top: 7px;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: -0.3px;
+}
+
+#history-count {
+    min-width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+
+    padding: 0 9px;
+
+    color: var(--cyan);
+    background: rgba(57, 139, 255, 0.12);
+    border: 1px solid rgba(57, 139, 255, 0.25);
+    border-radius: 6px;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* FILTERS */
+
+.history-filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 17px;
+}
+
+.history-filters select {
+    width: 100%;
+    min-width: 0;
+    padding: 10px 9px;
+
+    color: var(--text);
+    background: #091522;
+
+    border: 1px solid var(--border);
+    border-radius: 5px;
+
+    outline: none;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.history-filters select:focus {
+    border-color: var(--blue);
+}
+
+.history-filters select option {
+    color: var(--text);
+    background: var(--surface);
+}
+
+/* HISTORY CONTAINER */
+
+#history-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#history-container .empty-state {
+    padding: 25px 12px;
+    text-align: center;
+
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+
+    line-height: 1.6;
+}
+
+/* INDIVIDUAL RECORD */
+
+.history-item {
+    position: relative;
+    margin: 0;
+    padding: 0;
+
+    background: rgba(17, 30, 46, 0.72);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+
+    overflow: hidden;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.history-item:hover {
+    border-color: var(--border-light);
+    background: rgba(23, 40, 59, 0.85);
+}
+
+.history-item[open] {
+    border-color: rgba(57, 139, 255, 0.45);
+}
+
+/* RECORD HEADING */
+
+.history-item summary {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    padding: 15px 32px 15px 14px;
+
+    cursor: pointer;
+    list-style: none;
+}
+
+.history-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.history-item summary::after {
+    content: "+";
+    position: absolute;
+    top: 17px;
+    right: 13px;
+
+    color: var(--muted);
+    font-size: 17px;
+    line-height: 1;
+}
+
+.history-item[open] summary::after {
+    content: "−";
+    color: var(--cyan);
+}
+
+.history-item summary strong {
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.history-item summary small {
+    color: var(--muted);
+    font-size: 9px;
+    letter-spacing: 0.7px;
+    line-height: 1.5;
+}
+
+/* EXPANDED RECORD */
+
+.history-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    margin: 0;
+    padding: 14px;
+
+    border-top: 1px solid var(--border);
+    background: rgba(5, 12, 21, 0.35);
+}
+
+.history-details > p:first-child {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.history-details > p:last-of-type {
+    color: #c7d5e5;
+    font-size: 11px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+/* SEVERITY AND STATUS */
+
+.history-severity,
+.history-status {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+
+    padding: 5px 9px;
+
+    border: 1px solid transparent;
+    border-radius: 4px;
+
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+}
+
+/* Severity */
+
+.history-severity.critical {
+    color: #ff7884;
+    background: rgba(255, 83, 100, 0.12);
+    border-color: rgba(255, 83, 100, 0.22);
+}
+
+.history-severity.high {
+    color: #ffad72;
+    background: rgba(245, 145, 66, 0.12);
+    border-color: rgba(245, 145, 66, 0.2);
+}
+
+.history-severity.severe {
+    color: #ffad72;
+    background: rgba(245, 145, 66, 0.12);
+    border-color: rgba(245, 145, 66, 0.2);
+}
+
+.history-severity.warning {
+    color: #f5c96b;
+    background: rgba(245, 185, 66, 0.12);
+    border-color: rgba(245, 185, 66, 0.2);
+}
+
+.history-severity.moderate {
+    color: #f5c96b;
+    background: rgba(245, 185, 66, 0.12);
+    border-color: rgba(245, 185, 66, 0.2);
+}
+
+.history-severity.low,
+.history-severity.mild {
+    color: #78c9ff;
+    background: rgba(57, 139, 255, 0.12);
+    border-color: rgba(57, 139, 255, 0.2);
+}
+
+/* Status */
+
+.history-status.active {
+    color: #ff7884;
+    background: rgba(255, 83, 100, 0.1);
+    border-color: rgba(255, 83, 100, 0.2);
+}
+
+.history-status.acknowledged {
+    color: #f5c96b;
+    background: rgba(245, 185, 66, 0.1);
+    border-color: rgba(245, 185, 66, 0.2);
+}
+
+.history-status.resolved {
+    color: #79d8a0;
+    background: rgba(60, 200, 120, 0.1);
+    border-color: rgba(60, 200, 120, 0.2);
+}
+
+.history-status.unknown,
+.history-severity.unspecified {
+    color: #aab4c3;
+    background: rgba(170, 180, 195, 0.08);
+    border-color: rgba(170, 180, 195, 0.15);
+}
+
+/* ASTRA RESPONSE */
+
+.history-details > strong {
+    color: var(--cyan);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.history-details pre {
+    max-height: 260px;
+    overflow: auto;
+
+    padding: 12px;
+
+    color: #b9d5ef;
+    background: #081321;
+
+    border: 1px solid var(--border);
+    border-radius: 5px;
+
+    font-family: Consolas, monospace;
+    font-size: 10px;
+    line-height: 1.7;
+
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* SMALL SCREENS */
+
+@media (max-width: 550px) {
+    .history-filters {
+        grid-template-columns: 1fr;
+    }
+
+    .history-item summary {
+        padding: 14px 32px 14px 12px;
+    }
+
+    .history-details {
+        padding: 12px;
+    }
+}
+
+
+/* MEDICAL HISTORY - COLLAPSED RECORD META */
+
+.history-summary-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 3px;
+}
+
+.history-summary-meta .history-severity {
+    padding: 4px 8px;
+    font-size: 9px;
+}
+
+.history-summary-date {
+    color: var(--muted);
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+
+/* =====================================
+   ASTRA ASSIST RESPONSE
+===================================== */
+
+.astra-response {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    padding: 14px;
+    background: rgba(57, 139, 255, 0.06);
+    border: 1px solid rgba(57, 139, 255, 0.2);
+    border-radius: 6px;
+}
+
+.astra-response > strong {
+    color: var(--cyan);
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+.astra-response-status {
+    width: fit-content;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.astra-response-status.found {
+    color: var(--cyan);
+    background: rgba(85, 214, 232, 0.1);
+}
+
+.astra-response-status.not-found {
+    color: var(--amber);
+    background: rgba(245, 185, 66, 0.1);
+}
+
+.astra-response > p,
+.astra-recommendation p {
+    color: #c7d5e5;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.astra-recommendation {
+    padding-top: 11px;
+    border-top: 1px solid var(--border);
+}
+
+.astra-recommendation strong {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--amber);
+    font-size: 10px;
+    letter-spacing: 0.7px;
+}
+
+
+/* =========================================
+   ASTRA — EXTENDED SENSOR DASHBOARD
+========================================= */
+
+.reading-group {
+    margin-top: 22px;
+}
+
+.reading-group h4 {
+    margin-bottom: 12px;
+    color: var(--cyan);
+    font-size: 9px;
+    letter-spacing: 1.3px;
+}
+
+.reading-group .overview-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.reading-group .overview-card {
+    min-height: 125px;
+}
+
+.reading-group .overview-reading strong {
+    font-size: 25px;
+}
+
+.radiation-card {
+    border-color: rgba(245, 185, 66, 0.3);
+}
+
+.sensor-data-note {
+    margin-top: 20px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 9px;
+    line-height: 1.6;
+}
+
+@media (max-width: 1150px) {
+    .reading-group .overview-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 550px) {
+    .reading-group .overview-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================
+   OTHER CREW MEMBERS — SIDEBAR STATUS
+========================================= */
+
+.crew-status-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.crew-status-section > .panel-label {
+    margin-bottom: 16px;
+}
+
+#crew-status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.crew-member-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 10px 8px;
+
+    background: rgba(17, 30, 46, 0.65);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+
+    min-width: 0;
+}
+
+.crew-status-dot {
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+
+    border-radius: 50%;
+    background: var(--muted);
+}
+
+.crew-member-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.crew-member-details strong {
+    display: block;
+
+    color: var(--text);
+    font-size: 10px;
+    font-weight: 600;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.crew-member-details small {
+    display: block;
+    margin-top: 4px;
+
+    color: var(--muted);
+    font-size: 8px;
+    letter-spacing: 0.5px;
+}
+
+.crew-member-status {
+    font-size: 8px;
+    font-weight: bold;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+}
+
+.crew-member-item.healthy .crew-status-dot {
+    background: #55d6a0;
+    box-shadow: 0 0 7px rgba(85, 214, 160, 0.5);
+}
+
+.crew-member-item.healthy .crew-member-status {
+    color: #55d6a0;
+}
+
+.crew-member-item.warning .crew-status-dot {
+    background: var(--amber);
+    box-shadow: 0 0 7px rgba(245, 185, 66, 0.5);
+}
+
+.crew-member-item.warning .crew-member-status {
+    color: var(--amber);
+}
+
+.crew-member-item.critical .crew-status-dot {
+    background: var(--red);
+    box-shadow: 0 0 7px rgba(255, 83, 100, 0.5);
+}
+
+.crew-member-item.critical .crew-member-status {
+    color: var(--red);
+}
+
+.crew-member-item.no-signal .crew-status-dot {
+    background: var(--muted);
+}
+
+.crew-member-item.no-signal .crew-member-status {
+    color: var(--muted);
+}
+
+.crew-loading {
+    color: var(--muted);
+    font-size: 9px;
+    padding: 8px 0;
+}
+
+/* Sidebar layout on smaller screens */
+@media (max-width: 850px) {
+
+    .crew-status-section {
+        width: 100%;
+        margin-top: 15px;
+        padding-top: 15px;
+    }
+
+    #crew-status-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+@media (max-width: 400px) {
+
+    #crew-status-list {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+
+/* =========================================
+   ASTRA ASSIST — LEFT SIDEBAR INTERFACE
+========================================= */
+
+.astra-sidebar {
+    margin-top: 22px;
+    padding: 14px 10px;
+
+    background: rgba(12, 23, 37, 0.92);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+}
+
+.astra-sidebar-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.astra-sidebar-heading .panel-label {
+    color: var(--cyan);
+    font-weight: bold;
+}
+
+.astra-sidebar-description {
+    margin: 10px 0 13px;
+
+    color: var(--muted);
+    font-size: 8px;
+    line-height: 1.6;
+    letter-spacing: 0.7px;
+}
+
+/* QUESTION INPUT */
+
+.astra-question-box {
+    position: relative;
+    width: 100%;
+}
+
+.astra-question-box textarea {
+    display: block;
+    width: 100%;
+    min-height: 85px;
+
+    padding: 10px 36px 10px 9px;
+
+    color: var(--text);
+    background: #091522;
+
+    border: 1px solid var(--border);
+    border-radius: 5px;
+
+    outline: none;
+    resize: vertical;
+
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.astra-question-box textarea:focus {
+    border-color: var(--blue);
+}
+
+.astra-question-box textarea::placeholder {
+    color: #60748a;
+}
+
+/* MICROPHONE BUTTON */
+
+#voice-input-button {
+    position: absolute;
+    right: 7px;
+    bottom: 8px;
+
+    width: 27px;
+    height: 27px;
+
+    display: grid;
+    place-items: center;
+
+    color: var(--cyan);
+    background: #142b43;
+
+    border: 1px solid var(--border-light);
+    border-radius: 5px;
+
+    font-size: 14px;
+
+    transition: 0.2s;
+}
+
+#voice-input-button:hover {
+    background: #1c3c5b;
+    border-color: var(--cyan);
+}
+
+/* ASK ASTRA BUTTON */
+
+.astra-sidebar #knowledge-submit {
+    width: 100%;
+    margin-top: 10px;
+    padding: 11px 8px;
+
+    font-size: 9px;
+}
+
+/* RESPONSE AREA */
+
+.astra-sidebar #knowledge-result {
+    margin-top: 13px;
+    padding: 10px;
+
+    background: rgba(10, 25, 45, 0.75);
+    border: 1px solid rgba(80, 160, 220, 0.25);
+    border-radius: 5px;
+
+    color: #dce8f5;
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.astra-sidebar #knowledge-result:empty {
+    display: none;
+}
+
+.astra-sidebar #knowledge-result h3 {
+    font-size: 13px;
+    margin-bottom: 9px;
+}
+
+.astra-sidebar #knowledge-result h4 {
+    font-size: 9px;
+    margin-top: 12px;
+    margin-bottom: 6px;
+}
+
+.astra-sidebar #knowledge-result p {
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.astra-sidebar #knowledge-result ul {
+    padding-left: 15px;
+}
+
+.astra-sidebar #knowledge-result li {
+    font-size: 10px;
+    line-height: 1.5;
+    margin-bottom: 6px;
+}
+
+/* RESPONSE COMPONENTS */
+
+.astra-sidebar .astra-response {
+    padding: 10px;
+    gap: 9px;
+}
+
+.astra-sidebar .astra-response > strong {
+    font-size: 10px;
+}
+
+.astra-sidebar .astra-response > p,
+.astra-sidebar .astra-recommendation p {
+    font-size: 10px;
+}
+
+.astra-sidebar .astra-recommendation {
+    padding-top: 9px;
+}
+
+.astra-sidebar .astra-recommendation strong {
+    font-size: 9px;
+}
+
+/* SMALL SCREEN ADJUSTMENT */
+
+@media (max-width: 850px) {
+
+    .astra-sidebar {
+        width: 100%;
+        max-width: 450px;
+        margin-top: 18px;
+    }
+
+}

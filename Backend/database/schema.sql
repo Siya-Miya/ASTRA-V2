@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS alerts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
     crew_id INTEGER NOT NULL,
+    report_id INTEGER,
 
     alert_type TEXT NOT NULL,
     severity TEXT NOT NULL,
@@ -50,8 +51,12 @@ CREATE TABLE IF NOT EXISTS alerts (
     acknowledged_at DATETIME,
     resolved_at DATETIME,
 
+    astra_response_json TEXT,
+
     FOREIGN KEY (crew_id)
         REFERENCES crew_members(id),
+    FOREIGN KEY (report_id)
+        REFERENCES health_reports(id),
 
     CHECK (severity IN ('info', 'warning', 'critical')),
     CHECK (status IN ('open', 'acknowledged', 'resolved'))
@@ -73,6 +78,8 @@ CREATE TABLE IF NOT EXISTS health_reports (
 
     status TEXT NOT NULL DEFAULT 'new',
 
+    astra_response_json TEXT,
+
     FOREIGN KEY (crew_id)
         REFERENCES crew_members(id),
 
@@ -92,6 +99,9 @@ ON alerts(crew_id, triggered_at);
 
 CREATE INDEX IF NOT EXISTS idx_reports_crew_time
 ON health_reports(crew_id, reported_at);
+
+CREATE INDEX IF NOT EXISTS idx_alerts_report_id
+ON alerts(report_id);
 
 
 -- =========================================
