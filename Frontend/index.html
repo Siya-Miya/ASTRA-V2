@@ -1,168 +1,500 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASTRA | Crew Health Monitoring</title>
+
+    <title>ASTRA | Astronaut Health Station</title>
 
     <link rel="stylesheet" href="css/style.css">
-    
+
+    <!-- Three.js module imports -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+        }
+    }
+    </script>
+
+    <script type="module" src="js/script.js"></script>
 </head>
 
 <body>
 
-    <div class="app-container">
+    <div class="app-shell">
 
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
+        <!-- TOP NAVIGATION -->
+        <header class="topbar">
 
             <div class="brand">
-                <h1>ASTRA<span>.</span></h1>
-                <p>CREW HEALTH SYSTEM</p>
-            </div>
-
-            <nav class="navigation">
-                <a href="#" class="nav-link active">Overview</a>
-                <a href="#" class="nav-link">Health Reports</a>
-                <a href="#" class="nav-link">Medical Guidance</a>
-                <a href="#" class="nav-link">Mission Environment</a>
-                <a href="#" class="nav-link">Alert History</a>
-            </nav>
-
-            <div class="sidebar-footer">
-                <p>MISSION CONTROL SYSTEM</p>
-                <span>ASTRA V2.0</span>
-            </div>
-
-        </aside>
-
-
-        <!-- MAIN CONTENT -->
-        <main class="main-content">
-
-            <!-- TOP BAR -->
-            <header class="topbar">
+                <span class="brand-mark">A</span>
                 <div>
-                    <p class="eyebrow">MISSION HEALTH MONITORING</p>
-                    <h2>Crew Overview</h2>
+                    <h1>ASTRA</h1>
+                    <p>CREW HEALTH SYSTEM</p>
+                </div>
+            </div>
+
+            <div class="mission-info">
+                <span class="system-dot"></span>
+                <span>MISSION SYSTEM ACTIVE</span>
+            </div>
+
+            <div class="astronaut-identity">
+                <span class="identity-icon">01</span>
+                <div>
+                    <strong id="astronaut-name">ASTRONAUT 01</strong>
+                    <small id="crew-code">ASTRA-001</small>
+                </div>
+            </div>
+
+        </header>
+
+
+        <!-- MAIN WORKSPACE -->
+        <main class="workspace">
+
+            <!-- LEFT NAVIGATION -->
+            <aside class="left-panel">
+
+                <p class="panel-label">PERSONAL STATION</p>
+
+                <nav class="side-navigation">
+
+                    <a href="#home" class="nav-item active">
+                        <span>01</span>
+                        My Station
+                    </a>
+
+                    <a href="#body-section" class="nav-item">
+                        <span>02</span>
+                        My Body
+                    </a>
+
+                    <a href="#report-section" class="nav-item">
+                        <span>03</span>
+                        Report a Problem
+                    </a>
+
+                    <a href="#vitals-section" class="nav-item">
+                        <span>04</span>
+                        My Vitals
+                    </a>
+
+                    <a href="#history-section" class="nav-item">
+                        <span>05</span>
+                        Health History
+                    </a>
+
+                    <a href="#knowledge-section" class="nav-item">
+    <span>06</span>
+    ASTRA Assist
+</a>
+
+                </nav>
+
+                <div class="left-panel-footer">
+                    <p>CREW IDENTIFICATION</p>
+                    <strong id="astronaut-role">CREW MEMBER</strong>
+                    <small>IDENTITY ASSIGNED TO DEVICE</small>
                 </div>
 
-                <div class="system-status">
-                    <span class="status-indicator"></span>
-                    <span> SYSTEM ONLINE</span>
-                </div>
-            </header>
+            </aside>
 
 
-            <!-- ASTRONAUT PROFILE -->
-            <section class="astronaut-section">
+            <!-- CENTRAL BODY EXPERIENCE -->
+            <section class="body-workspace" id="home">
 
-                <div class="section-heading">
+                <div class="welcome-heading">
                     <div>
-                        <p class="eyebrow">PERSONAL HEALTH PROFILE</p>
-                        <h2 id="astronaut-name">Loading astronaut...</h2>
+                        <p class="eyebrow">PERSONAL HEALTH ENVIRONMENT</p>
+                        <h2>Your health. Your mission.</h2>
+                        <p class="subheading">
+                            Monitor your body and report anything unusual.
+                        </p>
                     </div>
 
-                    <span id="crew-code">ASTRA-001</span>
-                </div>
-
-                <div class="profile-summary">
-                    <div class="profile-item">
-                        <p>MISSION ROLE</p>
-                        <h3 id="astronaut-role">Crew Member</h3>
-                    </div>
-
-                    <div class="profile-item">
-                        <p>HEALTH STATUS</p>
-                        <h3 id="health-status">Awaiting data</h3>
-                    </div>
-
-                    <div class="profile-item">
-                        <p>SENSOR STATUS</p>
-                        <h3 id="sensor-status">Checking...</h3>
+                    <div class="monitoring-status">
+                        <span class="system-dot"></span>
+                        MONITORING ACTIVE
                     </div>
                 </div>
 
-            </section>
+
+<!-- DASHBOARD OVERVIEW -->
+<section class="dashboard-overview">
+
+    <div class="overview-heading">
+        <div>
+            <p class="eyebrow">MISSION HEALTH OVERVIEW</p>
+            <h3>Health at a glance</h3>
+        </div>
+
+        <span class="overview-label">PERSONAL MONITORING</span>
+    </div>
+
+    <div class="overview-grid">
+
+        <div class="overview-card">
+            <div class="overview-card-top">
+                <span>HEART RATE</span>
+                <span class="overview-icon red">♥</span>
+            </div>
+
+            <div class="overview-reading">
+                <strong id="overview-heart-rate">--</strong>
+                <span>bpm</span>
+            </div>
+
+            <small>Latest recorded measurement</small>
+        </div>
+
+        <div class="overview-card">
+            <div class="overview-card-top">
+                <span>OXYGEN SATURATION</span>
+                <span class="overview-icon blue">◈</span>
+            </div>
+
+            <div class="overview-reading">
+                <strong id="overview-oxygen">--</strong>
+                <span>%</span>
+            </div>
+
+            <small>Latest recorded measurement</small>
+        </div>
+
+        <div class="overview-card">
+            <div class="overview-card-top">
+                <span>BODY TEMPERATURE</span>
+                <span class="overview-icon amber">◉</span>
+            </div>
+
+            <div class="overview-reading">
+                <strong id="overview-temperature">--</strong>
+                <span>°C</span>
+            </div>
+
+            <small>Latest recorded measurement</small>
+        </div>
+
+    </div>
+
+</section>
 
 
-            <!-- VITALS -->
-            <section class="vitals-section">
+                <section class="body-card" id="body-section">
 
-                <div class="section-heading">
-                    <div>
-                        <p class="eyebrow">PHYSIOLOGICAL MONITORING</p>
-                        <h2>Live Vital Signs</h2>
+                    <div class="body-card-header">
+                        <div>
+                            <p class="eyebrow">BIOLOGICAL PROFILE</p>
+                            <h3>Human Body Model</h3>
+                        </div>
+
+                        <span class="model-status" id="model-status">
+                            INITIALISING 3D MODEL
+                        </span>
                     </div>
-                    <span class="live-label">LIVE DATA</span>
-                </div>
-
-                <div class="vitals-grid">
-
-                    <article class="vital-card">
-                        <p>HEART RATE</p>
-                        <h3 id="heart-rate">--</h3>
-                        <span>bpm</span>
-                    </article>
-
-                    <article class="vital-card">
-                        <p>BLOOD OXYGEN</p>
-                        <h3 id="oxygen">--</h3>
-                        <span>% SpO₂</span>
-                    </article>
-
-                    <article class="vital-card">
-                        <p>BODY TEMPERATURE</p>
-                        <h3 id="temperature">--</h3>
-                        <span>°C</span>
-                    </article>
-
-                </div>
-
-                <p class="last-updated">
-                    Last updated: <span id="last-updated">Waiting for readings...</span>
-                </p>
-
-            </section>
 
 
-            <!-- ALERTS AND CREW -->
-            <section class="lower-grid">
+                    <!-- THREE.JS VIEWER -->
+                    <div class="body-viewer">
 
-                <div class="panel alerts-panel">
+                        <div class="viewer-information">
+                            <span>INTERACTIVE ANATOMY</span>
+                            <span>DRAG TO ROTATE · SCROLL TO ZOOM</span>
+                        </div>
+
+                        <canvas id="body-canvas"></canvas>
+
+                        <div class="model-loading" id="model-loading">
+                            <div class="loading-spinner"></div>
+                            <p>Preparing anatomical model...</p>
+                        </div>
+
+                        <div class="viewer-controls">
+                            <button id="rotate-button" type="button">
+                                ROTATE
+                            </button>
+
+                            <button id="reset-view-button" type="button">
+                                RESET VIEW
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                    <div class="body-card-footer">
+                        <div>
+                            <span class="selection-indicator"></span>
+                            <span id="selected-region">
+                                Select a body region to begin
+                            </span>
+                        </div>
+
+                        <button id="report-region-button" type="button" disabled>
+                            REPORT SYMPTOM
+                        </button>
+                    </div>
+
+                </section>
+
+
+                <!-- SYMPTOM REPORTING -->
+                <section class="report-card" id="report-section">
+
                     <div class="section-heading">
                         <div>
-                            <p class="eyebrow">SYSTEM NOTIFICATIONS</p>
-                            <h2>Active Alerts</h2>
+                            <p class="eyebrow">HEALTH CHECK-IN</p>
+                            <h3>How are you feeling?</h3>
                         </div>
+                    </div>
+
+                    <p class="section-description">
+                        Record a symptom or health concern for review.
+                    </p>
+
+                    <form id="symptom-form">
+
+                        <div class="form-group">
+                            <label for="symptom-region">
+                                BODY REGION
+                            </label>
+
+                            <input
+                                type="text"
+                                id="symptom-region"
+                                placeholder="Select a region from the body model"
+                                readonly
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="symptom-description">
+                                WHAT ARE YOU EXPERIENCING?
+                            </label>
+
+                            <input
+                                type="text"
+                                id="symptom-description"
+                                placeholder="e.g. Headache, dizziness, discomfort"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+                                <label for="symptom-severity">
+                                    SEVERITY
+                                </label>
+
+                                <select id="symptom-severity" required>
+                                    <option value="">Select severity</option>
+                                    <option value="mild">Mild</option>
+                                    <option value="moderate">Moderate</option>
+                                    <option value="severe">Severe</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="symptom-onset">
+                                    WHEN DID IT START?
+                                </label>
+
+                                <select id="symptom-onset" required>
+                                    <option value="">Select onset</option>
+                                    <option value="just_now">Just now</option>
+                                    <option value="hours_ago">A few hours ago</option>
+                                    <option value="yesterday">Yesterday</option>
+                                    <option value="several_days">Several days ago</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label for="symptom-notes">
+                                ADDITIONAL DETAILS
+                            </label>
+
+                            <textarea
+                                id="symptom-notes"
+                                rows="3"
+                                placeholder="Describe what happened, how it feels, or anything else relevant..."
+                            ></textarea>
+                        </div>
+
+                        <button type="submit" class="submit-report">
+                            SUBMIT HEALTH REPORT
+                        </button>
+
+                        <p id="report-message" class="form-message"></p>
+
+                    </form>
+
+                </section>
+
+
+<!-- ASTRA ASSIST -->
+<section class="report-card" id="knowledge-section">
+
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">KNOWLEDGE SUPPORT SYSTEM</p>
+            <h3>ASTRA Assist</h3>
+        </div>
+
+        <span class="model-status">RESEARCH DATABASE</span>
+    </div>
+
+    <p class="section-description">
+        Ask a health-related question and explore information
+        from ASTRA's research knowledge base.
+    </p>
+
+    <form id="knowledge-form">
+
+        <div class="form-group">
+            <label for="knowledge-question">
+                YOUR QUESTION
+            </label>
+
+            <textarea
+                id="knowledge-question"
+                rows="3"
+                placeholder="e.g. How does poor sleep affect astronauts?"
+                required
+            ></textarea>
+        </div>
+
+        <button type="submit" class="submit-report" id="knowledge-submit">
+            ASK ASTRA
+        </button>
+
+    </form>
+
+    <div id="knowledge-result" aria-live="polite"></div>
+
+</section>
+
+
+            </section>
+
+
+            <!-- RIGHT INFORMATION PANEL -->
+            <aside class="right-panel">
+
+                <section class="personal-status">
+
+                    <p class="panel-label">YOUR CURRENT STATUS</p>
+
+                    <div class="health-status">
+                        <span class="system-dot"></span>
+                        <strong id="health-status">AWAITING DATA</strong>
+                    </div>
+
+                    <p class="status-description">
+                        Sensor information is used to monitor changes.
+                    </p>
+
+                </section>
+
+
+                <section class="vitals-section" id="vitals-section">
+
+                    <div class="section-heading">
+                        <p class="panel-label">LIVE PHYSIOLOGY</p>
+                        <span class="live-indicator">LIVE</span>
+                    </div>
+
+                    <div class="vital-item">
+                        <div>
+                            <p>HEART RATE</p>
+                            <small>Cardiovascular</small>
+                        </div>
+
+                        <div class="vital-value">
+                            <strong id="heart-rate">--</strong>
+                            <span>bpm</span>
+                        </div>
+                    </div>
+
+                    <div class="vital-item">
+                        <div>
+                            <p>OXYGEN SATURATION</p>
+                            <small>Blood oxygen</small>
+                        </div>
+
+                        <div class="vital-value">
+                            <strong id="oxygen">--</strong>
+                            <span>%</span>
+                        </div>
+                    </div>
+
+                    <div class="vital-item">
+                        <div>
+                            <p>BODY TEMPERATURE</p>
+                            <small>Core measurement</small>
+                        </div>
+
+                        <div class="vital-value">
+                            <strong id="temperature">--</strong>
+                            <span>°C</span>
+                        </div>
+                    </div>
+
+                    <p class="last-updated">
+                        LAST UPDATE
+                        <span id="last-updated">Waiting...</span>
+                    </p>
+
+                </section>
+
+
+                <section class="alerts-section" id="history-section">
+
+                    <div class="section-heading">
+                        <p class="panel-label">HEALTH NOTIFICATIONS</p>
                         <span id="alert-count">0</span>
                     </div>
 
                     <div id="alerts-container">
-                        <p class="empty-state">No active alerts.</p>
-                    </div>
-                </div>
-
-
-                <div class="panel crew-panel">
-                    <div class="section-heading">
-                        <div>
-                            <p class="eyebrow">CREW STATUS</p>
-                            <h2>Mission Crew</h2>
-                        </div>
+                        <p class="empty-state">
+                            No active notifications.
+                        </p>
                     </div>
 
-                    <div id="crew-container">
-                        <p class="empty-state">Loading crew members...</p>
-                    </div>
-                </div>
+                </section>
 
-            </section>
+
+                <section class="sensor-information">
+
+                    <p class="panel-label">SENSOR CONNECTION</p>
+
+                    <div class="sensor-status">
+                        <span class="system-dot"></span>
+                        <span id="sensor-status">CHECKING SENSORS</span>
+                    </div>
+
+                </section>
+
+            </aside>
 
         </main>
 
+
+        <footer class="app-footer">
+            <span>ASTRA V2.0</span>
+            <span>PERSONAL ASTRONAUT HEALTH MONITORING</span>
+            <span>ANATOMY MODEL: OPEN ANATOMY 3D · CC BY 4.0</span>
+        </footer>
+
     </div>
-<script src="js/script.js" ></script>
+
 </body>
 </html>
